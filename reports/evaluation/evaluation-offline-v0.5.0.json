@@ -1,0 +1,23 @@
+{
+  "datasetVersao": "0.5.0",
+  "resultados": [
+    {
+      "caso": "GOVBI-GOLD-001",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-002",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-003",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    }
+  ]
+}

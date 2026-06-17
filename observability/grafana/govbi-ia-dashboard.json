@@ -1,0 +1,95 @@
+{
+  "title": "GovBI IA - BI Conversacional Governado",
+  "uid": "govbi-ia-v050",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "tags": [
+    "govbi",
+    "ia",
+    "bi-conversacional",
+    "governanca"
+  ],
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Perguntas por status",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum by (status) (rate(govbi_perguntas_total[5m]))",
+          "legendFormat": "{{status}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Duração p95 da consulta",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(govbi_consulta_duracao_seconds_bucket[5m])))",
+          "legendFormat": "p95"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Bloqueios por segurança",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(govbi_perguntas_total{status=\"bloqueio\"}[24h]))",
+          "legendFormat": "bloqueios 24h"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Linhas retornadas",
+      "gridPos": {
+        "x": 8,
+        "y": 8,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "sum by (executor) (rate(govbi_resultado_linhas_sum[5m]))",
+          "legendFormat": "{{executor}}"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Erros",
+      "gridPos": {
+        "x": 16,
+        "y": 8,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(govbi_perguntas_total{status=\"erro\"}[1h]))",
+          "legendFormat": "erros 1h"
+        }
+      ]
+    }
+  ]
+}

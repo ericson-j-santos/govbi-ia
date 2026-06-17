@@ -1,0 +1,27 @@
+<section class="operacional">
+  <header>
+    <h2>Operação GovBI IA</h2>
+    <button type="button" (click)="carregar()">Atualizar painéis</button>
+  </header>
+
+  <div class="cards">
+    <article>
+      <h3>Aprovações pendentes</h3>
+      <p class="numero">{{ aprovacoes.length }}</p>
+    </article>
+    <article>
+      <h3>Fila pendente</h3>
+      <p class="numero">{{ fila.length }}</p>
+    </article>
+    <article>
+      <h3>Histórico recente</h3>
+      <p class="numero">{{ historico.length }}</p>
+    </article>
+    <article>
+      <h3>Auditoria recente</h3>
+      <p class="numero">{{ auditoria.length }}</p>
+    </article>
+  </div>
+
+  <small>Esta tela consome os endpoints operacionais do incremento 7. A edição e a aprovação devem respeitar RBAC/OIDC no ambiente corporativo.</small>
+</section>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GovBI IA v1.0.1 — Homologação</title>
+<style>
+:root{--bg:#0f172a;--panel:#111827;--panel2:#1f2937;--line:#334155;--txt:#e5e7eb;--muted:#94a3b8;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;--info:#38bdf8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#0f172a,#111827);font-family:Arial,Helvetica,sans-serif;color:var(--txt)}
+header{padding:28px 24px;border-bottom:1px solid var(--line);background:#020617}h1{margin:0 0 8px;font-size:28px}p{color:var(--muted);line-height:1.55}.wrap{max-width:1180px;margin:0 auto;padding:24px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:rgba(17,24,39,.95);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 12px 28px rgba(0,0,0,.25)}.card h2,.card h3{margin-top:0}.badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:#cbd5e1}.ok{color:var(--ok)}.warn{color:var(--warn)}.err{color:var(--err)}.info{color:var(--info)}button{border:0;border-radius:10px;background:#2563eb;color:white;padding:10px 14px;cursor:pointer;font-weight:700}button.secondary{background:#475569}pre{background:#020617;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;color:#d1d5db}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--line);padding:10px;text-align:left}th{color:#cbd5e1}@media(max-width:900px){.grid{grid-template-columns:1fr}.wrap{padding:14px}}</style>
+</head>
+<body>
+<header><div class="wrap"><span class="badge">GovBI IA v1.0.1</span><h1>Pacote de Homologação Operacional</h1><p>Simulação autocontida de readiness, smoke tests, aceite, rollback e promoção controlada para produção assistida.</p></div></header>
+<main class="wrap">
+<section class="grid">
+<div class="card"><h3>Release</h3><p class="info">v1.0.1</p><p>Baseline v1.0.0.</p></div>
+<div class="card"><h3>Modo</h3><p class="warn">Homologação</p><p>Execução real desabilitada por padrão.</p></div>
+<div class="card"><h3>Governança</h3><p class="ok">RBAC/RLS + Auditoria</p><p>PII exige aprovação humana.</p></div>
+<div class="card"><h3>Promoção</h3><p class="warn">Condicionada</p><p>Requer aceite formal e readiness.</p></div>
+</section>
+<section class="card" style="margin-top:16px"><h2>Checklist de homologação</h2><table><thead><tr><th>Item</th><th>Status</th><th>Evidência</th></tr></thead><tbody id="checks"></tbody></table><p><button onclick="executarSmoke()">Executar smoke simulado</button> <button class="secondary" onclick="gerarAceite()">Gerar aceite simulado</button></p></section>
+<section class="card" style="margin-top:16px"><h2>Resultado</h2><pre id="out">Aguardando execução.</pre></section>
+<section class="card" style="margin-top:16px"><h2>Fluxo de promoção controlada</h2><pre>Homologação → Smoke tests → Evidências → Aceite formal → Produção assistida → Monitoramento → Produção estabilizada</pre></section>
+</main>
+<script>
+const itens=['Health check','Readiness sem bloqueios críticos','OIDC/RBAC/RLS validado','Consulta governada','Consulta sensível pendente de aprovação','Auditoria consultável','Download controlado','DLQ consultável','Prometheus ativo','Rollback aprovado'];
+function render(status='PENDENTE'){document.getElementById('checks').innerHTML=itens.map((i,idx)=>`<tr><td>${i}</td><td class="${status==='OK'?'ok':'warn'}">${status}</td><td>HOM-${String(idx+1).padStart(3,'0')}</td></tr>`).join('')}
+function executarSmoke(){render('OK');document.getElementById('out').textContent=JSON.stringify({versao:'1.0.1',smoke_homologacao:'OK',correlation_id:crypto.randomUUID(),observacao:'Simulação local sem backend, sem CDN e sem dependências externas.'},null,2)}
+function gerarAceite(){document.getElementById('out').textContent=JSON.stringify({aceite_report:'PENDENTE_ASSINATURAS',aprovadores:['Dono de Dados','Segurança/LGPD','Arquitetura','Operação','Área usuária'],decisao:'aguardando formalização'},null,2)}
+render();
+</script>
+</body>
+</html>

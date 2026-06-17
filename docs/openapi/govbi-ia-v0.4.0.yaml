@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA — API de BI Conversacional Governado
+  version: 0.4.0
+  description: API para transformar perguntas em linguagem natural em consultas analíticas governadas, auditáveis e seguras.
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/v1/perguntas:
+    post:
+      summary: Responder pergunta analítica
+      operationId: responderPerguntaAnalitica
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: X-Correlation-Id
+          in: header
+          required: false
+          schema: { type: string }
+        - name: X-Usuario
+          in: header
+          required: false
+          schema: { type: string }
+        - name: X-Perfil
+          in: header
+          required: false
+          schema: { type: string }
+        - name: X-Escopo-Unidade
+          in: header
+          required: false
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerguntaAnaliticaRequest'
+      responses:
+        '200':
+          description: Resposta analítica governada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaAnalitica'
+        '400': { description: Pergunta inválida ou consulta não governada }
+        '401': { description: Token ausente ou inválido quando OIDC estiver habilitado }
+        '403': { description: Perfil, escopo ou política LGPD não autorizado }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    PerguntaAnaliticaRequest:
+      type: object
+      required: [pergunta]
+      properties:
+        pergunta: { type: string, minLength: 10 }
+        formatoResposta: { type: string, example: tabela_grafico }
+        exibirSql: { type: boolean, default: true }
+    RespostaAnalitica:
+      type: object
+      properties:
+        correlationId: { type: string }
+        intencao: { type: string }
+        metrica: { type: string }
+        dimensoes: { type: array, items: { type: string } }
+        filtros: { type: object }
+        sqlGerado: { type: string, nullable: true }
+        avisos: { type: array, items: { type: string } }
+        mascaramentoAplicado: { type: boolean }
+        explicacao: { type: string }
+        nivelSensibilidade: { type: string }
+        linhasEstimadas: { type: integer, format: int64 }
+        custoEstimado: { type: number }

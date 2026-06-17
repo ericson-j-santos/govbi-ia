@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: govbi-ia-config
+data:
+  GOVBI_DADOS_EXECUTOR: "mock"
+  GOVBI_DADOS_PERMITIR_EXECUCAO_REAL: "false"
+  GOVBI_APROVACAO_HABILITADA: "true"
+  GOVBI_EXPORTACAO_LIMITE_LINHAS: "5000"

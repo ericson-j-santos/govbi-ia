@@ -1,0 +1,12 @@
+{
+  "versao": "0.7.0",
+  "incremento": "persistencia-corporativa-real",
+  "checks": [
+    "schema_sqlserver",
+    "adapters_sqlserver",
+    "fila_reprocessamento",
+    "docs",
+    "demo"
+  ],
+  "status": "OK"
+}

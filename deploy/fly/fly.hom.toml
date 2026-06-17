@@ -1,0 +1,63 @@
+# Fly.io — govbi-ia-hom (homologação)
+# Uso: fly deploy -c deploy/fly/fly.hom.toml --app govbi-ia-hom
+# Secrets: fly secrets set -a govbi-ia-hom GOVBI_GEMINI_API_KEY=xxx GOVBI_COFRE_TOKEN=xxx ...
+
+app = "govbi-ia-hom"
+primary_region = "gru"
+
+[build]
+  dockerfile = "deploy/docker/Dockerfile"
+
+[env]
+  SPRING_PROFILES_ACTIVE = "hom"
+  GOVBI_VERSAO = "1.0.1"
+  GOVBI_AMBIENTE = "hom"
+  GOVBI_RELEASE_MODO = "homologacao"
+  GOVBI_IA_MODO = "gemini"
+  GOVBI_GEMINI_MODEL = "gemini-2.0-flash"
+  GOVBI_DADOS_EXECUTOR = "mock-rag"
+  GOVBI_DADOS_PERMITIR_EXECUCAO_REAL = "false"
+  GOVBI_OIDC_HABILITADO = "false"
+  GOVBI_WORKER_HABILITADO = "false"
+  GOVBI_FILA_HABILITADA = "false"
+  GOVBI_NOTIFICACAO_CANAIS_ATIVOS = "LOG"
+  GOVBI_DOWNLOAD_HABILITADO = "true"
+  GOVBI_DOWNLOAD_EXIGIR_AUDITORIA = "false"
+  GOVBI_OBSERVABILIDADE_METRICAS_HABILITADAS = "true"
+  GOVBI_CATALOGO_TIPO = "yaml"
+  GOVBI_CATALOGO_RECURSO = "classpath:catalogo-semantico-reqsys.yml"
+  GOVBI_COFRE_HABILITADO = "true"
+  GOVBI_COFRE_URL = "https://reqsys-enterprise-api.fly.dev"
+
+# Secrets obrigatórios via: fly secrets set -a govbi-ia-hom
+# GOVBI_GEMINI_API_KEY  — chave do Google AI Studio
+# GOVBI_COFRE_TOKEN     — token de acesso ao reqsys-enterprise-api
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8080
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 50
+    soft_limit = 40
+
+  [[services.http_checks]]
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "60s"
+    method = "GET"
+    path = "/actuator/health"
+
+[vm]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

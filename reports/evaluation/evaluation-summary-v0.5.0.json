@@ -1,0 +1,7 @@
+{
+  "datasetVersao": "0.5.0",
+  "modo": "offline",
+  "statusGeral": "OK",
+  "casos": 3,
+  "observacao": "Relatório amostral gerado para quality gate local. O modo online deve ser executado contra backend ativo."
+}

@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA API
+  version: 1.0.0
+  description: API corporativa para BI conversacional governado com IA.
+paths:
+  /api/v1/perguntas:
+    post:
+      summary: Responde pergunta analítica em linguagem natural
+      responses:
+        '200': { description: Resposta analítica, aprovação ou bloqueio governado }
+  /api/v1/release/readiness:
+    get:
+      summary: Consulta readiness da release corporativa
+      responses:
+        '200': { description: Status de readiness }
+  /api/v1/aprovacoes/pendentes:
+    get:
+      summary: Lista aprovações pendentes
+      responses:
+        '200': { description: Lista de aprovações }
+  /api/v1/fila-consultas/processar-pendentes:
+    post:
+      summary: Processa lote de fila assíncrona
+      responses:
+        '200': { description: Processamento executado }
+  /api/v1/dlq-consultas/recentes:
+    get:
+      summary: Lista DLQ recente
+      responses:
+        '200': { description: Itens DLQ }
+  /api/v1/downloads/resultados/{resultadoId}:
+    get:
+      summary: Baixa resultado aprovado em formato controlado
+      parameters:
+        - name: resultadoId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: formato
+          in: query
+          required: false
+          schema: { type: string, enum: [csv, json] }
+      responses:
+        '200': { description: Arquivo controlado }
+        '403': { description: Sem permissão ou retenção expirada }

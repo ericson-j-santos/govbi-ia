@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA API
+  version: 0.9.0
+paths:
+  /api/v1/dlq-consultas/recentes:
+    get:
+      summary: Lista itens recentes da DLQ
+      responses:
+        '200': { description: OK }
+  /api/v1/downloads/resultados/{resultadoId}:
+    get:
+      summary: Baixa resultado aprovado em formato controlado
+      parameters:
+        - name: resultadoId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: formato
+          in: query
+          required: false
+          schema: { type: string, enum: [csv, json] }
+      responses:
+        '200': { description: Arquivo gerado }
+        '403': { description: Perfil não autorizado }

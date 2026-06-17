@@ -1,0 +1,12 @@
+{
+  "version": "0.6.0",
+  "status": "OK",
+  "checks": [
+    "human_in_the_loop",
+    "history",
+    "auditable_events",
+    "controlled_export",
+    "catalog_admin",
+    "docker_k8s"
+  ]
+}

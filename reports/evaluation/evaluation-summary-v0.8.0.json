@@ -1,0 +1,13 @@
+{
+  "versao": "0.8.0",
+  "status": "OK",
+  "casos": [
+    "GOVBI-GOLD-001",
+    "GOVBI-GOLD-002",
+    "GOVBI-GOLD-003"
+  ],
+  "incremento": "operacao-assincrona-real",
+  "worker": "OK",
+  "retencao": "OK",
+  "notificacoes": "OK"
+}

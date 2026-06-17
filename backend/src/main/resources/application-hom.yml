@@ -1,0 +1,19 @@
+govbi:
+  versao: 1.0.1
+  seguranca:
+    oidc-habilitado: true
+  dados:
+    executor: sqlserver
+    permitir-execucao-real: false
+produto-operacional:
+  persistencia:
+    operacional:
+      tipo: sqlserver
+  worker:
+    habilitado: false
+integracao-corporativa:
+  lock:
+    tipo: sqlserver
+release:
+  corporativa:
+    modo: homologacao

@@ -1,0 +1,24 @@
+{
+  "produto": "GovBI IA — BI Conversacional Governado",
+  "versao": "1.0.0",
+  "data": "2026-06-14",
+  "status": "release-candidate",
+  "artefatos": [
+    "govbi-ia-mvp-v1.0.0.zip",
+    "govbi-ia-demo-v1.0.0.html"
+  ],
+  "componentes": {
+    "backend": "Java 21 / Spring Boot / arquitetura hexagonal",
+    "frontend": "Angular / Angular Material",
+    "dados": "Mock, SQL Server, Databricks",
+    "operacao": "SQL Server operacional, fila, worker, DLQ, lock, retenção",
+    "observabilidade": "Actuator, Prometheus, Grafana, OTLP"
+  },
+  "gatesExecutadosOffline": [
+    "quality_check.py",
+    "validate_catalog_version.py",
+    "evaluate_nl_sql.py --offline",
+    "validate_release_v100.py",
+    "e2e_contract_v100.py"
+  ]
+}

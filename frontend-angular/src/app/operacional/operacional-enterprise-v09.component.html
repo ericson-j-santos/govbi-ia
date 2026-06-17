@@ -1,0 +1,44 @@
+<section class="op-shell">
+  <header>
+    <h1>GovBI IA · Operação Enterprise v0.9.0</h1>
+    <p>Aprovação, fila assíncrona, resultados, DLQ, notificações e auditoria visual.</p>
+    <button mat-raised-button color="primary" (click)="carregar()">Atualizar</button>
+  </header>
+
+  <div class="grid">
+    <article class="card">
+      <h2>Aprovações pendentes</h2>
+      <div *ngFor="let a of aprovacoes" class="item">
+        <strong>{{ a.metrica }}</strong><span>{{ a.correlationId }}</span>
+        <button mat-button color="primary" (click)="aprovar(a.id)">Aprovar</button>
+        <button mat-button color="warn" (click)="rejeitar(a.id)">Rejeitar</button>
+        <button mat-button (click)="reprocessar(a.id)">Reprocessar</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>Fila</h2>
+      <div *ngFor="let f of fila" class="item"><strong>{{ f.status }}</strong><span>{{ f.id }}</span><small>{{ f.mensagem }}</small></div>
+    </article>
+
+    <article class="card">
+      <h2>Resultados</h2>
+      <div *ngFor="let r of resultados" class="item"><strong>{{ r.metrica }}</strong><span>{{ r.statusRetencao }}</span><button mat-button (click)="downloadCsv(r.id)">CSV controlado</button></div>
+    </article>
+
+    <article class="card">
+      <h2>DLQ</h2>
+      <div *ngFor="let d of dlq" class="item"><strong>{{ d.status }}</strong><span>{{ d.correlationId }}</span><small>{{ d.motivoFalha }}</small></div>
+    </article>
+
+    <article class="card">
+      <h2>Notificações</h2>
+      <div *ngFor="let n of notificacoes" class="item"><strong>{{ n.canal }} · {{ n.status }}</strong><span>{{ n.titulo }}</span></div>
+    </article>
+
+    <article class="card">
+      <h2>Auditoria</h2>
+      <div *ngFor="let a of auditorias" class="item"><strong>{{ a.status }}</strong><span>{{ a.correlationId }}</span><small>{{ a.tipoEvento }}</small></div>
+    </article>
+  </div>
+</section>

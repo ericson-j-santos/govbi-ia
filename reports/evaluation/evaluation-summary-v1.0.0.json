@@ -1,0 +1,7 @@
+{
+  "versao": "1.0.0",
+  "status": "OK",
+  "casos": 6,
+  "bloqueiosEsperados": 2,
+  "observacao": "Resumo offline gerado para release candidate v1.0.0."
+}

@@ -1,0 +1,164 @@
+<mat-toolbar color="primary">
+  <span>GovBI IA — BI Conversacional Governado</span>
+</mat-toolbar>
+
+<main class="shell">
+  <section class="hero">
+    <div>
+      <p class="versao">Incremento 4 · Governança corporativa: OIDC, RBAC, RLS, OpenAPI e LLM real</p>
+      <h1>Consultas e relatórios por linguagem natural</h1>
+      <p>Converta perguntas em consultas auditáveis usando catálogo semântico, RAG, validação iterativa, dry-run e catálogo YAML, RBAC/RLS, logs JSON, OpenAPI e adapters mock/SQL Server/Databricks/LLM real.</p>
+    </div>
+  </section>
+
+  <mat-card class="painel">
+    <mat-card-header>
+      <mat-card-title>Pergunta analítica</mat-card-title>
+      <mat-card-subtitle>Exemplo: propostas por mês, situação, unidade ou produto.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="campo-pergunta">
+        <mat-label>Digite sua pergunta</mat-label>
+        <textarea matInput rows="4" [formControl]="pergunta"></textarea>
+        <mat-hint>O backend recupera contexto semântico, gera SQL, valida, executa dry-run e só então consulta.</mat-hint>
+      </mat-form-field>
+
+      <div class="acoes">
+        <button mat-raised-button color="primary" (click)="perguntar()" [disabled]="carregando()">
+          <mat-icon>send</mat-icon>
+          Consultar
+        </button>
+        <button mat-stroked-button (click)="exemplo('Compare propostas cadastradas por mês em 2025')">Exemplo mensal</button>
+        <button mat-stroked-button (click)="exemplo('Mostre propostas de 2025 por unidade e situação')">Exemplo unidade</button>
+        <button mat-stroked-button (click)="exemplo('Liste CPF e nome dos clientes por proposta')">Exemplo bloqueio PII</button>
+      </div>
+    </mat-card-content>
+    @if (carregando()) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+  </mat-card>
+
+  @if (resposta(); as r) {
+    <section class="metricas">
+      <mat-card>
+        <mat-card-content>
+          <span class="rotulo">Sensibilidade</span>
+          <strong>{{ r.nivelSensibilidade }}</strong>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content>
+          <span class="rotulo">Linhas estimadas</span>
+          <strong>{{ r.linhasEstimadas }}</strong>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content>
+          <span class="rotulo">Custo estimado</span>
+          <strong>{{ r.custoEstimado }}</strong>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content>
+          <span class="rotulo">Tentativas</span>
+          <strong>{{ r.tentativas.length }}</strong>
+        </mat-card-content>
+      </mat-card>
+    </section>
+
+    <section class="grid">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Plano de consulta</mat-card-title>
+          <mat-card-subtitle>Correlation ID: {{ r.correlationId }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>Métrica:</strong> {{ r.metrica }}</p>
+          <p><strong>Intenção:</strong> {{ r.intencao }}</p>
+          <p><strong>Mascaramento:</strong> {{ r.mascaramentoAplicado ? 'aplicado' : 'não aplicado' }}</p>
+          <p><strong>Governança:</strong> RBAC validado; RLS aplicado quando escopo de unidade ≠ GERAL.</p>
+          <mat-chip-set>
+            @for (dimensao of r.dimensoes; track dimensao) {
+              <mat-chip>{{ dimensao }}</mat-chip>
+            }
+          </mat-chip-set>
+          @if (r.avisos.length) {
+            <div class="avisos">
+              @for (aviso of r.avisos; track aviso) {
+                <p>{{ aviso }}</p>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Explicação</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ r.explicacao }}</p>
+        </mat-card-content>
+      </mat-card>
+    </section>
+
+    <mat-card class="painel">
+      <mat-card-header>
+        <mat-card-title>Resultado</mat-card-title>
+        <mat-card-subtitle>Resultado retornado pelo ExecutorConsultaPort ativo: mock, SQL Server ou Databricks.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="tabela-wrapper">
+          <table mat-table [dataSource]="r.resultado.linhas" class="tabela">
+            @for (coluna of colunas(); track coluna) {
+              <ng-container [matColumnDef]="coluna">
+                <th mat-header-cell *matHeaderCellDef>{{ coluna }}</th>
+                <td mat-cell *matCellDef="let linha">{{ linha[coluna] }}</td>
+              </ng-container>
+            }
+            <tr mat-header-row *matHeaderRowDef="colunas()"></tr>
+            <tr mat-row *matRowDef="let row; columns: colunas();"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <section class="grid">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Contexto semântico recuperado</mat-panel-title>
+          <mat-panel-description>RAG sobre catálogo</mat-panel-description>
+        </mat-expansion-panel-header>
+        @for (trecho of r.contextoSemantico; track trecho.id) {
+          <article class="trecho">
+            <strong>{{ trecho.nome }}</strong>
+            <small>{{ trecho.tipo }} · score {{ trecho.pontuacao }}</small>
+            <p>{{ trecho.conteudo }}</p>
+          </article>
+        }
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Tentativas de validação</mat-panel-title>
+          <mat-panel-description>Geração → validação → dry-run</mat-panel-description>
+        </mat-expansion-panel-header>
+        @for (tentativa of r.tentativas; track tentativa.rodada) {
+          <article class="trecho">
+            <strong>Rodada {{ tentativa.rodada }} — {{ tentativa.aprovada ? 'aprovada' : 'bloqueada' }}</strong>
+            @for (erro of tentativa.erros; track erro) { <p class="erro">{{ erro }}</p> }
+            @for (aviso of tentativa.avisos; track aviso) { <p>{{ aviso }}</p> }
+          </article>
+        }
+      </mat-expansion-panel>
+    </section>
+
+    <mat-expansion-panel class="painel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>SQL gerado</mat-panel-title>
+        <mat-panel-description>Consulta visível para conferência e auditoria</mat-panel-description>
+      </mat-expansion-panel-header>
+      <pre>{{ r.sqlGerado }}</pre>
+    </mat-expansion-panel>
+  }
+</main>

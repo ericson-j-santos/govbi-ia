@@ -1,0 +1,14 @@
+{
+  "versao": "1.0.0",
+  "status": "RELEASE_CANDIDATE",
+  "gates": [
+    {"id": "GOVBI-GATE-001", "nome": "OIDC habilitado em produção", "obrigatorio": true},
+    {"id": "GOVBI-GATE-002", "nome": "Executor real explicitamente habilitado", "obrigatorio": true},
+    {"id": "GOVBI-GATE-003", "nome": "Persistência operacional SQL Server", "obrigatorio": true},
+    {"id": "GOVBI-GATE-004", "nome": "Catálogo semântico versionado", "obrigatorio": true},
+    {"id": "GOVBI-GATE-005", "nome": "Quality gate NL→SQL executado", "obrigatorio": true},
+    {"id": "GOVBI-GATE-006", "nome": "Observabilidade Prometheus/Grafana configurada", "obrigatorio": true},
+    {"id": "GOVBI-GATE-007", "nome": "DLQ, lock distribuído e retenção configurados", "obrigatorio": true},
+    {"id": "GOVBI-GATE-008", "nome": "Download controlado e auditado", "obrigatorio": true}
+  ]
+}

@@ -1,0 +1,6 @@
+.release { padding: 24px; }
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+article { border: 1px solid #d5d9e2; border-radius: 12px; padding: 16px; background: #fff; }
+article strong { display: block; font-size: 18px; }
+article span { color: #586174; }
+@media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }

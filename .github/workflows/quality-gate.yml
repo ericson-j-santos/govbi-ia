@@ -1,0 +1,37 @@
+name: GovBI IA Quality Gate
+
+on:
+  pull_request:
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests
+        run: |
+          cd backend
+          mvn test
+      - name: Static quality checks
+        run: |
+          python scripts/quality_check.py
+          python scripts/validate_catalog_version.py
+          python scripts/evaluate_nl_sql.py --offline
+          python scripts/validate_operational_increment.py
+          python scripts/validate_persistence_increment.py
+          python scripts/validate_async_increment.py
+          python scripts/validate_integration_increment.py
+          python scripts/validate_release_v100.py
+          python scripts/e2e_contract_v100.py --offline
+          python scripts/validate_homologation_v101.py
+          python scripts/run_homologation_smoke.py --modo offline
+          python scripts/generate_aceite_report.py --ambiente ci

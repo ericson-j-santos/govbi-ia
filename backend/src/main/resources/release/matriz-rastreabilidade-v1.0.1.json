@@ -1,0 +1,29 @@
+{
+  "versao": "1.0.1",
+  "rastreabilidade": [
+    {
+      "id": "REQ-HOM-001",
+      "origem": "HOMOLOGACAO_V101",
+      "artefato": "scripts/run_homologation_smoke.py",
+      "evidencia": "reports/homologacao/smoke-v1.0.1.json"
+    },
+    {
+      "id": "REQ-HOM-002",
+      "origem": "ACEITE_FORMAL_V101",
+      "artefato": "scripts/generate_aceite_report.py",
+      "evidencia": "reports/homologacao/aceite-v1.0.1.json"
+    },
+    {
+      "id": "REQ-HOM-003",
+      "origem": "PLANO_ROLLBACK_V101",
+      "artefato": "docs/PLANO_ROLLBACK_V101.md",
+      "evidencia": "aprovação operacional"
+    },
+    {
+      "id": "REQ-HOM-004",
+      "origem": "MATRIZ_CONFIG_AMBIENTES_V101",
+      "artefato": "deploy/env/*.example",
+      "evidencia": "variáveis revisadas"
+    }
+  ]
+}

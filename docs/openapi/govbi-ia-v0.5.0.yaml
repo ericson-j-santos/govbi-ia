@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA - API de BI Conversacional Governado
+  version: 0.5.0
+  description: API para transformar perguntas em linguagem natural em consultas analíticas governadas, com observabilidade e avaliação.
+paths:
+  /api/v1/perguntas:
+    post:
+      summary: Responde pergunta analítica em linguagem natural
+      parameters:
+        - name: X-Usuario
+          in: header
+          schema: { type: string }
+        - name: X-Perfil
+          in: header
+          schema: { type: string }
+        - name: X-Escopo-Unidade
+          in: header
+          schema: { type: string }
+        - name: X-Correlation-Id
+          in: header
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pergunta]
+              properties:
+                pergunta: { type: string }
+                formatoResposta: { type: string, example: tabela_grafico }
+                exibirSql: { type: boolean, example: true }
+      responses:
+        '200':
+          description: Resposta analítica governada
+        '400':
+          description: Pergunta inválida ou consulta não segura
+        '403':
+          description: Acesso negado ou consulta sensível bloqueada
+  /actuator/prometheus:
+    get:
+      summary: Métricas Prometheus do GovBI IA
+      responses:
+        '200': { description: Métricas em formato Prometheus }
+  /actuator/health:
+    get:
+      summary: Saúde da aplicação
+      responses:
+        '200': { description: Estado da aplicação }

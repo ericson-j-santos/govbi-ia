@@ -1,0 +1,31 @@
+{
+  "produto": "GovBI IA",
+  "versao": "1.0.1",
+  "ambiente": "hom",
+  "decisao": "pendente",
+  "geradoEmEpoch": 1781474430,
+  "evidencias": [
+    {
+      "arquivo": "reports/homologacao/smoke-v1.0.1.json",
+      "presente": true
+    },
+    {
+      "arquivo": "docs/ACEITE_FORMAL_V101.md",
+      "presente": true
+    },
+    {
+      "arquivo": "docs/PLANO_ROLLBACK_V101.md",
+      "presente": true
+    },
+    {
+      "arquivo": "release/homologacao-manifest-v1.0.1.json",
+      "presente": true
+    },
+    {
+      "arquivo": "backend/src/main/resources/release/checklist-producao-v1.0.1.json",
+      "presente": true
+    }
+  ],
+  "pendencias": [],
+  "observacao": "Relatório inicial de aceite. A decisão final deve ser formalizada pelos aprovadores."
+}

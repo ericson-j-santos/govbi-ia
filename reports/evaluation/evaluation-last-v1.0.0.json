@@ -1,0 +1,41 @@
+{
+  "datasetVersao": "1.0.0",
+  "resultados": [
+    {
+      "caso": "GOVBI-GOLD-001",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-002",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-003",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-004",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-005",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-006",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    }
+  ]
+}

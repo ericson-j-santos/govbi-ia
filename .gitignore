@@ -1,0 +1,9 @@
+﻿target/
+*.jar
+*.class
+.env*
+data/
+*.log
+*.err
+.idea/
+*.iml

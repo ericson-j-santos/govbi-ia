@@ -1,0 +1,45 @@
+{
+  "produto": "GovBI IA",
+  "versao": "1.0.1",
+  "modo": "offline",
+  "baseUrl": null,
+  "geradoEmEpoch": 1781474427,
+  "casos": [
+    {
+      "nome": "docs/HOMOLOGACAO_V101.md",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    },
+    {
+      "nome": "docs/ACEITE_FORMAL_V101.md",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    },
+    {
+      "nome": "docs/RUNBOOK_GO_LIVE_V101.md",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    },
+    {
+      "nome": "docs/PLANO_ROLLBACK_V101.md",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    },
+    {
+      "nome": "release/homologacao-manifest-v1.0.1.json",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    },
+    {
+      "nome": "deploy/env/.env.hom.example",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    },
+    {
+      "nome": "deploy/env/.env.prod.example",
+      "status": "OK",
+      "detalhe": "arquivo obrigatório"
+    }
+  ],
+  "resultado": "OK"
+}

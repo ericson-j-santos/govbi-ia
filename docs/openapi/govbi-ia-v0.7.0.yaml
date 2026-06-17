@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA API
+  version: 0.7.0
+paths:
+  /api/v1/perguntas:
+    post:
+      summary: Responder pergunta analítica governada
+      responses:
+        '200': { description: Resposta analítica }
+  /api/v1/aprovacoes/pendentes:
+    get:
+      summary: Listar aprovações pendentes
+      responses:
+        '200': { description: Lista de aprovações }
+  /api/v1/aprovacoes/{id}/decisao:
+    post:
+      summary: Decidir aprovação humana
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Aprovação decidida }
+  /api/v1/fila-consultas/pendentes:
+    get:
+      summary: Listar itens pendentes da fila operacional
+      responses:
+        '200': { description: Itens de fila }
+  /api/v1/fila-consultas/aprovacoes/{aprovacaoId}/reprocessar:
+    post:
+      summary: Enfileirar reprocessamento de aprovação já aprovada
+      parameters:
+        - in: path
+          name: aprovacaoId
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Item enfileirado }
+  /api/v1/historico/recentes:
+    get:
+      summary: Histórico conversacional recente
+      responses:
+        '200': { description: Histórico }
+  /api/v1/auditoria/recentes:
+    get:
+      summary: Auditoria operacional recente
+      responses:
+        '200': { description: Auditoria }

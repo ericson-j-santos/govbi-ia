@@ -1,0 +1,10 @@
+{
+  "versao": "1.0.0",
+  "itens": [
+    {"requisito": "REQ-GOVBI-001", "descricao": "Pergunta em linguagem natural para consultas governadas", "implementacao": ["PerguntaAnaliticaController", "ResponderPerguntaAnaliticaUseCase"], "testes": ["GOVBI-GOLD-001", "GOVBI-GOLD-002"]},
+    {"requisito": "REQ-GOVBI-002", "descricao": "Bloqueio ou aprovação humana para PII", "implementacao": ["AprovacaoHumanaPort", "AprovacaoController"], "testes": ["GOVBI-GOLD-003"]},
+    {"requisito": "REQ-GOVBI-003", "descricao": "Execução read-only com SQL Server/Databricks", "implementacao": ["ExecutorConsultaPort", "ExecutorConsultaSqlServerAdapter", "ExecutorConsultaDatabricksAdapter"], "testes": ["validate_release_v100"]},
+    {"requisito": "REQ-GOVBI-004", "descricao": "Operação assíncrona com fila, lock, DLQ e retenção", "implementacao": ["FilaConsultaWorker", "LockDistribuidoPort", "DeadLetterConsultaPort", "ResultadoConsultaPersistidaPort"], "testes": ["validate_async_increment", "validate_integration_increment"]},
+    {"requisito": "REQ-GOVBI-005", "descricao": "Observabilidade e auditoria sem PII bruta", "implementacao": ["ObservabilidadePort", "AuditoriaConsultavelPort"], "testes": ["quality_check"]}
+  ]
+}

@@ -1,0 +1,112 @@
+versao: "1.0.1"
+contratoGovernanca:
+  compatibilidadeMinimaBackend: "1.0.1"
+  donoCatalogo: "BI Governado"
+  politicaMudanca: "Alterações em métricas, joins, campos sensíveis ou RLS exigem revisão técnica e aprovação de dados."
+  changelog:
+    - versao: "1.0.0"
+      data: "2026-06-14"
+      alteracao: "Incluído versionamento formal para avaliação, observabilidade e quality gate."
+metricas:
+  - nome: qtd_propostas_cadastradas
+    descricao: "Quantidade de propostas cadastradas no período informado. Usar para volume, total, evolução e comparações de propostas."
+    tabelaFato: "gold.fato_proposta p"
+    agregacao: "COUNT(*)"
+    filtroPadrao: "p.ic_excluido = 0"
+    dimensoesPermitidas:
+      - ano_mes
+      - situacao
+      - unidade
+      - produto
+    camposSensiveis:
+      - cpf
+      - nome_cliente
+      - email
+      - telefone
+    joinsPorDimensao:
+      ano_mes: "JOIN gold.dim_tempo t ON t.id_tempo = p.id_tempo_cadastro"
+      situacao: "JOIN gold.dim_situacao s ON s.id_situacao = p.id_situacao"
+      unidade: "JOIN gold.dim_unidade u ON u.id_unidade = p.id_unidade"
+      produto: "JOIN gold.dim_produto pr ON pr.id_produto = p.id_produto"
+    politicaAcesso:
+      perfisPermitidos: ["ANALISTA", "ADMIN", "BI_GOVERNADO"]
+      perfisAprovadoresPii: ["ADMIN", "DPO", "SEGURANCA_DADOS"]
+      rls:
+        campoUnidade: "u.codigo_unidade"
+        joinObrigatorio: "JOIN gold.dim_unidade u ON u.id_unidade = p.id_unidade"
+        escopoGeral: "GERAL"
+trechos:
+  - id: metrica.qtd_propostas_cadastradas
+    tipo: metrica
+    nome: qtd_propostas_cadastradas
+    conteudo: "Métrica governada para contar propostas cadastradas. Sinônimos: quantidade de propostas, volume de propostas, total de propostas, evolução de propostas."
+  - id: dim.ano_mes
+    tipo: dimensao
+    nome: ano_mes
+    conteudo: "Dimensão temporal mensal. Usar quando a pergunta mencionar mês, mensal, evolução, histórico, período, série histórica ou comparação entre meses."
+  - id: dim.situacao
+    tipo: dimensao
+    nome: situacao
+    conteudo: "Dimensão de situação/status da proposta. Usar quando a pergunta mencionar situação, status, aprovada, reprovada, em análise ou etapa."
+  - id: dim.unidade
+    tipo: dimensao
+    nome: unidade
+    conteudo: "Dimensão organizacional da unidade/agência. Usar quando a pergunta mencionar unidade, agência, ponto de atendimento, região ou dependência."
+  - id: dim.produto
+    tipo: dimensao
+    nome: produto
+    conteudo: "Dimensão de produto. Usar quando a pergunta mencionar produto, modalidade ou linha de crédito."
+  - id: lgpd.pii
+    tipo: seguranca
+    nome: dados_pessoais
+    conteudo: "Campos sensíveis: cpf, nome_cliente, email e telefone. Perguntas que pedem listagem individual de clientes, CPF ou dados pessoais devem ser bloqueadas ou exigir aprovação humana."
+  - id: sql.gold
+    tipo: sql
+    nome: camada_gold
+    conteudo: "Consultas devem usar exclusivamente objetos governados da camada gold, sempre com SELECT, agregação explícita, WHERE com filtro padrão da métrica e limitador de linhas."
+  - id: governanca.readonly
+    tipo: seguranca
+    nome: readonly
+    conteudo: "São proibidos DDL, DML, múltiplos comandos, comentários SQL, funções perigosas, SELECT * e objetos fora da allowlist semântica."
+  - id: governanca.rbac_rls
+    tipo: seguranca
+    nome: rbac_rls
+    conteudo: "A identidade do usuário define perfis analíticos e escopo de unidade. Se o escopo for diferente de GERAL, aplicar predicado de linha por unidade."
+
+
+fluxoAprovacao:
+  politicaPadrao: "Consultas com PII, detalhe individual, exportacao ampla ou custo elevado exigem aprovacao humana."
+  aprovadoresPadrao:
+    - ADMIN
+    - GOVERNANCA_DADOS
+  slaHoras: 24
+
+
+releaseV100:
+  status: "RELEASE_CANDIDATE"
+  principios:
+    - "IA não acessa banco diretamente; usa catálogo, validação, RBAC/RLS e executor governado."
+    - "SQL real permanece bloqueado por padrão até configuração explícita e aprovação operacional."
+    - "Dados pessoais exigem aprovação humana e resultado mascarado."
+    - "Toda consulta deve ser rastreável por correlation_id."
+  gatesObrigatorios:
+    - quality_check
+    - validate_catalog_version
+    - evaluate_nl_sql_offline
+    - validate_release_v100
+    - e2e_contract_v100
+
+
+homologacaoV101:
+  status: "pronto-para-homologacao"
+  requisitosAceite:
+    - "Smoke tests executados com evidência"
+    - "Readiness de release sem bloqueios críticos"
+    - "OIDC validado em homologação"
+    - "SQL Server operacional validado com migrations aplicadas"
+    - "Catálogo semântico aprovado pelo dono de dados"
+    - "Plano de rollback aprovado"
+  bloqueiosPromocao:
+    - "consulta sensível sem aprovação humana"
+    - "execução real habilitada sem dry-run e auditoria"
+    - "download sem correlação de auditoria"

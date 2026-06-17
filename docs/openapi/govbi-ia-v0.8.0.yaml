@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA API
+  version: 0.8.0
+  description: API do GovBI IA com operação assíncrona, reprocessamento pós-aprovação, resultados persistidos, notificações e SLA.
+paths:
+  /api/v1/fila-consultas/processar-pendentes:
+    post:
+      summary: Processa lote de itens pendentes da fila operacional.
+      parameters:
+        - in: query
+          name: limite
+          schema: { type: integer, default: 5 }
+      responses:
+        '200': { description: Resumo do processamento }
+  /api/v1/fila-consultas/{id}/processar:
+    post:
+      summary: Processa manualmente um item de fila.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Item atualizado }
+  /api/v1/resultados/recentes:
+    get:
+      summary: Lista resultados analíticos persistidos recentemente.
+      responses:
+        '200': { description: Lista de resultados }
+  /api/v1/resultados/aprovacoes/{aprovacaoId}:
+    get:
+      summary: Lista resultados materializados de uma aprovação.
+      parameters:
+        - in: path
+          name: aprovacaoId
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Lista de resultados da aprovação }
+  /api/v1/notificacoes/recentes:
+    get:
+      summary: Lista notificações operacionais recentes.
+      responses:
+        '200': { description: Lista de notificações }
+  /api/v1/sla/executar-expiracao:
+    post:
+      summary: Executa expiração manual de aprovações vencidas e resultados fora da retenção.
+      responses:
+        '200': { description: Resumo de expiração }

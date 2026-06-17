@@ -1,0 +1,56 @@
+{
+  "versao": "1.0.1",
+  "tipo": "homologacao-operacional",
+  "itens": [
+    {
+      "id": "HOM-001",
+      "descricao": "Health check ativo",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-002",
+      "descricao": "Readiness sem bloqueios críticos",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-003",
+      "descricao": "OIDC com claims de usuário, perfis e unidade validado",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-004",
+      "descricao": "RBAC/RLS validado com usuário de escopo restrito",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-005",
+      "descricao": "Consulta governada não sensível executada",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-006",
+      "descricao": "Consulta sensível direcionada para aprovação humana",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-007",
+      "descricao": "Auditoria consultável sem PII bruta",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-008",
+      "descricao": "Download controlado com retenção ativa",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-009",
+      "descricao": "DLQ consultável e sem crescimento anormal",
+      "obrigatorio": true
+    },
+    {
+      "id": "HOM-010",
+      "descricao": "Plano de rollback aprovado",
+      "obrigatorio": true
+    }
+  ]
+}

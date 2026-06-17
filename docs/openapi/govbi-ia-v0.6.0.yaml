@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA API
+  version: 0.6.0
+  description: API do BI Conversacional Governado com camada operacional.
+paths:
+  /api/v1/perguntas:
+    post:
+      summary: Responde uma pergunta analítica em linguagem natural.
+      responses:
+        '200': { description: Consulta executada ou pendente de aprovação }
+  /api/v1/aprovacoes/pendentes:
+    get:
+      summary: Lista solicitações pendentes de aprovação humana.
+      responses:
+        '200': { description: Lista de aprovações pendentes }
+  /api/v1/aprovacoes/{id}/decisao:
+    post:
+      summary: Aprova ou rejeita uma solicitação sensível.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Solicitação decidida }
+  /api/v1/historico/meu:
+    get:
+      summary: Lista histórico conversacional do usuário autenticado.
+      responses:
+        '200': { description: Histórico do usuário }
+  /api/v1/auditoria/recentes:
+    get:
+      summary: Lista eventos recentes de auditoria operacional.
+      responses:
+        '200': { description: Eventos de auditoria }
+  /api/v1/exportacoes:
+    post:
+      summary: Exporta resultado já governado em CSV ou JSON.
+      responses:
+        '200': { description: Arquivo exportado }
+  /api/v1/catalogo/metricas:
+    get:
+      summary: Lista métricas semânticas.
+      responses:
+        '200': { description: Métricas }
+  /api/v1/catalogo/yaml:
+    get:
+      summary: Retorna catálogo semântico YAML atual.
+      responses:
+        '200': { description: Catálogo YAML }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

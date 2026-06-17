@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: GovBI IA API
+  version: 1.0.1
+  description: API do GovBI IA com pacote de homologação operacional.
+paths:
+  /api/v1/release/readiness:
+    get:
+      summary: Consulta readiness da release
+      responses:
+        '200': { description: OK }
+  /api/v1/perguntas:
+    post:
+      summary: Executa pergunta analítica governada
+      responses:
+        '200': { description: OK }
+  /api/v1/aprovacoes/pendentes:
+    get:
+      summary: Lista aprovações pendentes
+      responses:
+        '200': { description: OK }
+  /api/v1/auditoria/recentes:
+    get:
+      summary: Lista auditorias recentes
+      responses:
+        '200': { description: OK }
+  /actuator/health:
+    get:
+      summary: Health check operacional
+      responses:
+        '200': { description: UP }

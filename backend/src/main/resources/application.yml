@@ -1,0 +1,216 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: govbi-ia
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${GOVBI_OIDC_ISSUER_URI:}
+          jwk-set-uri: ${GOVBI_OIDC_JWK_SET_URI:}
+
+management:
+  tracing:
+    sampling:
+      probability: ${GOVBI_TRACING_SAMPLING_PROBABILITY:0.10}
+  otlp:
+    tracing:
+      endpoint: ${GOVBI_OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,loggers
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  show-actuator: true
+
+govbi:
+  versao: ${GOVBI_VERSAO:1.0.1}
+  cofre:
+    habilitado: ${GOVBI_COFRE_HABILITADO:false}
+    url: ${GOVBI_COFRE_URL:http://localhost:8081}
+    token: ${GOVBI_COFRE_TOKEN:}
+  observabilidade:
+    metricas-habilitadas: ${GOVBI_OBSERVABILIDADE_METRICAS_HABILITADAS:true}
+    tracing-habilitado: ${GOVBI_OBSERVABILIDADE_TRACING_HABILITADO:false}
+    dataset-avaliacao: ${GOVBI_OBSERVABILIDADE_DATASET_AVALIACAO:classpath:evaluation/golden-dataset.json}
+    tags-comuns:
+      sistema: govbi-ia
+      ambiente: ${GOVBI_AMBIENTE:local}
+      versao: ${GOVBI_VERSAO:1.0.1}
+  ia:
+    # mock-rag | openai | azure-openai | groq
+    modo: ${GOVBI_IA_MODO:mock-rag}
+    max-tentativas-geracao: ${GOVBI_IA_MAX_TENTATIVAS:3}
+    openai:
+      base-url: ${GOVBI_OPENAI_BASE_URL:https://api.openai.com/v1/chat/completions}
+      api-key: ${GOVBI_OPENAI_API_KEY:}
+      model: ${GOVBI_OPENAI_MODEL:gpt-4.1-mini}
+      timeout-segundos: ${GOVBI_OPENAI_TIMEOUT_SEGUNDOS:30}
+    azure-openai:
+      endpoint: ${GOVBI_AZURE_OPENAI_ENDPOINT:}
+      deployment: ${GOVBI_AZURE_OPENAI_DEPLOYMENT:}
+      api-key: ${GOVBI_AZURE_OPENAI_API_KEY:}
+      api-version: ${GOVBI_AZURE_OPENAI_API_VERSION:2025-01-01-preview}
+      timeout-segundos: ${GOVBI_AZURE_OPENAI_TIMEOUT_SEGUNDOS:30}
+    groq:
+      api-key: ${GOVBI_GROQ_API_KEY:}
+      model: ${GOVBI_GROQ_MODEL:llama-3.3-70b-versatile}
+      timeout-segundos: ${GOVBI_GROQ_TIMEOUT_SEGUNDOS:30}
+  catalogo:
+    # yaml | memoria
+    tipo: ${GOVBI_CATALOGO_TIPO:yaml}
+    recurso-yaml: ${GOVBI_CATALOGO_RECURSO:classpath:catalogo-semantico.yml}
+  seguranca:
+    oidc-habilitado: ${GOVBI_OIDC_HABILITADO:false}
+    camada-obrigatoria: gold
+    limite-linhas-dry-run: 50000
+    limite-custo-dry-run: 75
+    perfis-analiticos: ${GOVBI_SEGURANCA_PERFIS_ANALITICOS:ANALISTA,ADMIN,BI_GOVERNADO}
+    perfis-aprovadores-pii: ${GOVBI_SEGURANCA_PERFIS_APROVADORES_PII:ADMIN,DPO,SEGURANCA_DADOS}
+    aplicar-rls-unidade: ${GOVBI_SEGURANCA_APLICAR_RLS_UNIDADE:true}
+    claim-usuario: ${GOVBI_OIDC_CLAIM_USUARIO:preferred_username}
+    claim-perfis: ${GOVBI_OIDC_CLAIM_PERFIS:roles}
+    claim-unidade: ${GOVBI_OIDC_CLAIM_UNIDADE:escopo_unidade}
+  dados:
+    # mock | sqlserver | databricks
+    executor: ${GOVBI_DADOS_EXECUTOR:mock}
+    permitir-execucao-real: ${GOVBI_DADOS_PERMITIR_EXECUCAO_REAL:false}
+    query-timeout-segundos: ${GOVBI_DADOS_QUERY_TIMEOUT_SEGUNDOS:30}
+    limite-linhas-retorno: ${GOVBI_DADOS_LIMITE_LINHAS_RETORNO:1000}
+    limite-linhas-dry-run: ${GOVBI_DADOS_LIMITE_LINHAS_DRY_RUN:50000}
+    limite-custo-dry-run: ${GOVBI_DADOS_LIMITE_CUSTO_DRY_RUN:75}
+    bloquear-sem-filtro-temporal: ${GOVBI_DADOS_BLOQUEAR_SEM_FILTRO_TEMPORAL:true}
+    fetch-size: ${GOVBI_DADOS_FETCH_SIZE:250}
+    sqlserver:
+      url: ${GOVBI_SQLSERVER_URL:}
+      usuario: ${GOVBI_SQLSERVER_USER:}
+      senha: ${GOVBI_SQLSERVER_PASSWORD:}
+      driver-class-name: ${GOVBI_SQLSERVER_DRIVER:com.microsoft.sqlserver.jdbc.SQLServerDriver}
+      schema: ${GOVBI_SQLSERVER_SCHEMA:gold}
+    databricks:
+      url: ${GOVBI_DATABRICKS_URL:}
+      usuario: ${GOVBI_DATABRICKS_USER:token}
+      senha: ${GOVBI_DATABRICKS_TOKEN:}
+      driver-class-name: ${GOVBI_DATABRICKS_DRIVER:com.databricks.client.jdbc.Driver}
+      catalogo: ${GOVBI_DATABRICKS_CATALOG:}
+      schema: ${GOVBI_DATABRICKS_SCHEMA:gold}
+    postgres:
+      url: ${GOVBI_POSTGRES_URL:}
+      usuario: ${GOVBI_POSTGRES_USER:}
+      senha: ${GOVBI_POSTGRES_PASSWORD:}
+      driver-class-name: ${GOVBI_POSTGRES_DRIVER:org.postgresql.Driver}
+      schema: ${GOVBI_POSTGRES_SCHEMA:public}
+
+logging:
+  pattern:
+    console: '{"timestamp":"%d{yyyy-MM-dd''T''HH:mm:ss.SSSXXX}","level":"%level","logger":"%logger{36}","correlation_id":"%X{correlation_id:-}","message":"%replace(%msg){''"'',''\"''}"}%n'
+  level:
+    br.com.reqsys.govbi: INFO
+    org.springframework.security: INFO
+
+
+produto-operacional:
+  historico:
+    habilitado: ${GOVBI_HISTORICO_HABILITADO:true}
+    retencao-dias: ${GOVBI_HISTORICO_RETENCAO_DIAS:180}
+  aprovacao:
+    habilitada: ${GOVBI_APROVACAO_HABILITADA:true}
+    sla-horas: ${GOVBI_APROVACAO_SLA_HORAS:24}
+  exportacao:
+    formatos-permitidos: ${GOVBI_EXPORTACAO_FORMATOS:csv,json}
+    limite-linhas: ${GOVBI_EXPORTACAO_LIMITE_LINHAS:5000}
+  admin:
+    catalogo-edicao-habilitada: ${GOVBI_CATALOGO_EDICAO_HABILITADA:false}
+
+# persistencia-operacional-v07
+  persistencia:
+    operacional:
+      # memoria | sqlserver
+      tipo: ${GOVBI_PERSISTENCIA_OPERACIONAL_TIPO:memoria}
+      sqlserver:
+        url: ${GOVBI_OPERACIONAL_SQLSERVER_URL:}
+        usuario: ${GOVBI_OPERACIONAL_SQLSERVER_USER:}
+        senha: ${GOVBI_OPERACIONAL_SQLSERVER_PASSWORD:}
+        driver-class-name: ${GOVBI_OPERACIONAL_SQLSERVER_DRIVER:com.microsoft.sqlserver.jdbc.SQLServerDriver}
+        schema: ${GOVBI_OPERACIONAL_SQLSERVER_SCHEMA:govbi}
+        query-timeout-segundos: ${GOVBI_OPERACIONAL_SQLSERVER_TIMEOUT:15}
+        max-rows-admin: ${GOVBI_OPERACIONAL_SQLSERVER_MAX_ROWS_ADMIN:500}
+  fila:
+    habilitada: ${GOVBI_FILA_HABILITADA:true}
+    modo: ${GOVBI_FILA_MODO:sincrona-controlada}
+    intervalo-polling-segundos: ${GOVBI_FILA_INTERVALO_POLLING_SEGUNDOS:30}
+    max-tentativas: ${GOVBI_FILA_MAX_TENTATIVAS:3}
+
+  worker:
+    habilitado: ${GOVBI_WORKER_HABILITADO:false}
+    intervalo-ms: ${GOVBI_WORKER_INTERVALO_MS:30000}
+    lote: ${GOVBI_WORKER_LOTE:5}
+    persistir-resultado: ${GOVBI_WORKER_PERSISTIR_RESULTADO:true}
+    retencao-dias-resultado: ${GOVBI_RESULTADO_RETENCAO_DIAS:30}
+  notificacao:
+    habilitada: ${GOVBI_NOTIFICACAO_HABILITADA:true}
+    canais: ${GOVBI_NOTIFICACAO_CANAIS:LOG}
+    teams-webhook-url: ${GOVBI_TEAMS_WEBHOOK_URL:}
+    email-remetente: ${GOVBI_EMAIL_REMETENTE:govbi@empresa.local}
+  sla:
+    expirar-aprovacoes-habilitado: ${GOVBI_SLA_EXPIRAR_APROVACOES_HABILITADO:false}
+    intervalo-ms: ${GOVBI_SLA_INTERVALO_MS:300000}
+
+# v0.9.0 — integração corporativa real de notificações e operação resiliente
+integracao-corporativa:
+  notificacao:
+    canais-ativos: ${GOVBI_NOTIFICACAO_CANAIS_ATIVOS:LOG}
+    templates-habilitados: ${GOVBI_NOTIFICACAO_TEMPLATES_HABILITADOS:true}
+    teams:
+      habilitado: ${GOVBI_TEAMS_HABILITADO:false}
+      webhook-url: ${GOVBI_TEAMS_WEBHOOK_URL:}
+      timeout-segundos: ${GOVBI_TEAMS_TIMEOUT_SEGUNDOS:10}
+    email:
+      habilitado: ${GOVBI_EMAIL_HABILITADO:false}
+      remetente: ${GOVBI_EMAIL_REMETENTE:govbi@empresa.local}
+      assunto-prefixo: ${GOVBI_EMAIL_ASSUNTO_PREFIXO:[GovBI IA]}
+  lock:
+    tipo: ${GOVBI_LOCK_TIPO:memoria} # memoria | sqlserver
+    ttl-segundos: ${GOVBI_LOCK_TTL_SEGUNDOS:120}
+  dlq:
+    habilitada: ${GOVBI_DLQ_HABILITADA:true}
+    max-tentativas-reprocessamento: ${GOVBI_DLQ_MAX_TENTATIVAS:3}
+  download:
+    habilitado: ${GOVBI_DOWNLOAD_HABILITADO:true}
+    formatos-permitidos: ${GOVBI_DOWNLOAD_FORMATOS:csv,json}
+    limite-linhas: ${GOVBI_DOWNLOAD_LIMITE_LINHAS:5000}
+    exigir-correlacao-auditoria: ${GOVBI_DOWNLOAD_EXIGIR_AUDITORIA:true}
+
+
+# v1.0.0 — consolidação corporativa / release candidate
+release:
+  corporativa:
+    versao: ${GOVBI_RELEASE_VERSAO:1.0.1}
+    modo: ${GOVBI_RELEASE_MODO:homologacao} # release-candidate | homologacao | producao
+    hardening-obrigatorio: ${GOVBI_RELEASE_HARDENING_OBRIGATORIO:true}
+    exigir-oidc-producao: ${GOVBI_RELEASE_EXIGIR_OIDC_PRODUCAO:true}
+    exigir-sqlserver-operacional-producao: ${GOVBI_RELEASE_EXIGIR_SQLSERVER_OPERACIONAL_PRODUCAO:true}
+    exigir-execucao-real-explicita: ${GOVBI_RELEASE_EXIGIR_EXECUCAO_REAL_EXPLICITA:true}
+    exigir-download-auditado: ${GOVBI_RELEASE_EXIGIR_DOWNLOAD_AUDITADO:true}
+    checklist-producao: classpath:release/checklist-producao-v1.0.1.json
+    matriz-rastreabilidade: classpath:release/matriz-rastreabilidade-v1.0.1.json
+
+
+# v1.0.1 — pacote de homologação e promoção controlada
+homologacao-operacional:
+  plano: ${GOVBI_HOMOLOGACAO_PLANO:HOMOLOGACAO_V101}
+  exigir-smoke-tests: ${GOVBI_HOMOLOGACAO_EXIGIR_SMOKE_TESTS:true}
+  exigir-aceite-formal: ${GOVBI_HOMOLOGACAO_EXIGIR_ACEITE_FORMAL:true}
+  exigir-evidencias: ${GOVBI_HOMOLOGACAO_EXIGIR_EVIDENCIAS:true}
+  bloquear-promocao-sem-readiness: ${GOVBI_HOMOLOGACAO_BLOQUEAR_PROMOCAO_SEM_READINESS:true}
+  janela-rollout-minutos: ${GOVBI_HOMOLOGACAO_JANELA_ROLLOUT_MINUTOS:60}
+  janela-rollback-minutos: ${GOVBI_HOMOLOGACAO_JANELA_ROLLBACK_MINUTOS:30}

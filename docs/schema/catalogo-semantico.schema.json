@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GovBI IA - Catálogo Semântico",
+  "type": "object",
+  "required": ["versao", "contratoGovernanca", "metricas", "trechos"],
+  "properties": {
+    "versao": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "contratoGovernanca": {
+      "type": "object",
+      "required": ["compatibilidadeMinimaBackend", "donoCatalogo", "politicaMudanca"],
+      "properties": {
+        "compatibilidadeMinimaBackend": { "type": "string" },
+        "donoCatalogo": { "type": "string" },
+        "politicaMudanca": { "type": "string" },
+        "changelog": { "type": "array" }
+      }
+    },
+    "metricas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["nome", "descricao", "tabelaFato", "agregacao", "filtroPadrao", "dimensoesPermitidas", "camposSensiveis", "politicaAcesso"],
+        "properties": {
+          "nome": { "type": "string" },
+          "descricao": { "type": "string" },
+          "tabelaFato": { "type": "string" },
+          "agregacao": { "type": "string" },
+          "filtroPadrao": { "type": "string" },
+          "dimensoesPermitidas": { "type": "array", "items": { "type": "string" } },
+          "camposSensiveis": { "type": "array", "items": { "type": "string" } },
+          "joinsPorDimensao": { "type": "object" },
+          "politicaAcesso": { "type": "object" }
+        }
+      }
+    },
+    "trechos": { "type": "array", "minItems": 1 }
+  }
+}

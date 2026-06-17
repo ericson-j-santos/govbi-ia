@@ -1,0 +1,60 @@
+name: Deploy Fly.io
+
+on:
+  push:
+    branches:
+      - develop   # deploy automático em hom
+      - main      # deploy em prod (com aprovação)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build JAR
+        run: cd backend && mvn package -Dmaven.test.skip=true
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: govbi-ia-jar
+          path: backend/target/govbi-ia-*.jar
+          retention-days: 1
+
+  deploy-hom:
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: homologacao
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: govbi-ia-jar
+          path: backend/target/
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy homologação
+        run: flyctl deploy --app govbi-ia-hom --config deploy/fly/fly.hom.toml --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  deploy-prod:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: producao
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: govbi-ia-jar
+          path: backend/target/
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy produção
+        run: flyctl deploy --app govbi-ia-prod --config deploy/fly/fly.prod.toml --remote-only --strategy rolling
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

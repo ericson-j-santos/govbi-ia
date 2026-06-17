@@ -1,0 +1,151 @@
+versao: "1.0.0"
+contratoGovernanca:
+  compatibilidadeMinimaBackend: "1.0.1"
+  donoCatalogo: "ReqSys / Redmine"
+  politicaMudanca: "Alterações em métricas ou joins exigem revisão técnica do responsável pelo ReqSys."
+  changelog:
+    - versao: "1.0.0"
+      data: "2026-06-15"
+      alteracao: "Catálogo inicial com métricas do Redmine (issues, projetos, usuários)."
+
+metricas:
+  - nome: qtd_issues_abertas
+    descricao: "Quantidade de issues abertas (não fechadas) no Redmine. Usar para volume de pendências, backlog ativo."
+    tabelaFato: "public.issues i"
+    agregacao: "COUNT(*)"
+    filtroPadrao: "i.status_id NOT IN (SELECT id FROM public.issue_statuses WHERE is_closed = TRUE)"
+    dimensoesPermitidas:
+      - projeto
+      - tracker
+      - prioridade
+      - periodo
+    camposSensiveis: []
+    joinsPorDimensao:
+      projeto: "JOIN public.projects p ON p.id = i.project_id"
+      tracker: "JOIN public.trackers t ON t.id = i.tracker_id"
+      prioridade: "JOIN public.enumerations e ON e.id = i.priority_id AND e.type = 'IssuePriority'"
+      periodo: ""
+    politicaAcesso:
+      perfisPermitidos: ["ANALISTA", "ADMIN", "BI_GOVERNADO"]
+      perfisAprovadoresPii: ["ADMIN"]
+      rls:
+        escopoGeral: "GERAL"
+
+  - nome: qtd_issues_por_projeto
+    descricao: "Quantidade total de issues por projeto no Redmine. Usar para comparar volume entre projetos."
+    tabelaFato: "public.issues i"
+    agregacao: "COUNT(*)"
+    filtroPadrao: "i.project_id IS NOT NULL"
+    dimensoesPermitidas:
+      - projeto
+      - status
+      - tracker
+      - periodo
+    camposSensiveis: []
+    joinsPorDimensao:
+      projeto: "JOIN public.projects p ON p.id = i.project_id"
+      status: "JOIN public.issue_statuses s ON s.id = i.status_id"
+      tracker: "JOIN public.trackers t ON t.id = i.tracker_id"
+      periodo: ""
+    politicaAcesso:
+      perfisPermitidos: ["ANALISTA", "ADMIN", "BI_GOVERNADO"]
+      perfisAprovadoresPii: ["ADMIN"]
+      rls:
+        escopoGeral: "GERAL"
+
+  - nome: evolucao_issues_criadas
+    descricao: "Evolução temporal de issues criadas por mês. Usar para tendência, histórico e crescimento do backlog."
+    tabelaFato: "public.issues i"
+    agregacao: "COUNT(*)"
+    filtroPadrao: "i.created_on IS NOT NULL"
+    dimensoesPermitidas:
+      - periodo
+      - projeto
+      - tracker
+    camposSensiveis: []
+    joinsPorDimensao:
+      projeto: "JOIN public.projects p ON p.id = i.project_id"
+      tracker: "JOIN public.trackers t ON t.id = i.tracker_id"
+      periodo: ""
+    politicaAcesso:
+      perfisPermitidos: ["ANALISTA", "ADMIN", "BI_GOVERNADO"]
+      perfisAprovadoresPii: ["ADMIN"]
+      rls:
+        escopoGeral: "GERAL"
+
+  - nome: qtd_issues_fechadas
+    descricao: "Quantidade de issues fechadas no período. Usar para medir throughput, velocidade de resolução."
+    tabelaFato: "public.issues i"
+    agregacao: "COUNT(*)"
+    filtroPadrao: "i.status_id IN (SELECT id FROM public.issue_statuses WHERE is_closed = TRUE)"
+    dimensoesPermitidas:
+      - projeto
+      - tracker
+      - periodo
+    camposSensiveis: []
+    joinsPorDimensao:
+      projeto: "JOIN public.projects p ON p.id = i.project_id"
+      tracker: "JOIN public.trackers t ON t.id = i.tracker_id"
+      periodo: ""
+    politicaAcesso:
+      perfisPermitidos: ["ANALISTA", "ADMIN", "BI_GOVERNADO"]
+      perfisAprovadoresPii: ["ADMIN"]
+      rls:
+        escopoGeral: "GERAL"
+
+trechos:
+  - id: metrica.qtd_issues_abertas
+    tipo: metrica
+    nome: qtd_issues_abertas
+    conteudo: "Métrica para contar issues abertas/pendentes. Sinônimos: pendências, backlog, issues em aberto, tarefas abertas, tickets abertos."
+
+  - id: metrica.qtd_issues_por_projeto
+    tipo: metrica
+    nome: qtd_issues_por_projeto
+    conteudo: "Quantidade de issues agrupada por projeto. Sinônimos: issues por projeto, distribuição de issues, volume por projeto."
+
+  - id: metrica.evolucao_issues_criadas
+    tipo: metrica
+    nome: evolucao_issues_criadas
+    conteudo: "Evolução mensal de issues criadas. Sinônimos: histórico de criação, tendência de issues, crescimento do backlog, série histórica de issues."
+
+  - id: metrica.qtd_issues_fechadas
+    tipo: metrica
+    nome: qtd_issues_fechadas
+    conteudo: "Issues fechadas/resolvidas. Sinônimos: issues resolvidas, fechamentos, throughput, velocidade de resolução."
+
+  - id: dim.projeto
+    tipo: dimensao
+    nome: projeto
+    conteudo: "Projeto do Redmine. Usar quando a pergunta mencionar projeto, sistema, módulo ou área."
+
+  - id: dim.tracker
+    tipo: dimensao
+    nome: tracker
+    conteudo: "Tipo de issue no Redmine (Bug, Feature, Task etc.). Usar quando mencionar tipo, categoria, bug, funcionalidade."
+
+  - id: dim.status
+    tipo: dimensao
+    nome: status
+    conteudo: "Status da issue (Nova, Em andamento, Resolvida etc.). Usar quando mencionar status, etapa, situação."
+
+  - id: dim.periodo
+    tipo: dimensao
+    nome: periodo
+    conteudo: "Dimensão temporal por mês/período usando created_on ou updated_on. Usar quando mencionar mês, período, evolução, histórico, data."
+
+  - id: sql.postgres_redmine
+    tipo: sql
+    nome: camada_redmine
+    conteudo: "Consultas usam schema public do Redmine (Postgres). Objetos: issues, projects, issue_statuses, trackers, enumerations. Sempre SELECT read-only com agregação e filtro."
+
+  - id: governanca.readonly
+    tipo: seguranca
+    nome: readonly
+    conteudo: "São proibidos DDL, DML, múltiplos comandos, SELECT *, funções perigosas e objetos fora da allowlist semântica."
+
+fluxoAprovacao:
+  politicaPadrao: "Consultas com detalhe individual de usuário ou exportação ampla exigem aprovação humana."
+  aprovadoresPadrao:
+    - ADMIN
+  slaHoras: 24

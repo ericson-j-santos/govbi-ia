@@ -1,0 +1,45 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+  datasource:
+    url: "jdbc:h2:mem:govbi_local;DB_CLOSE_DELAY=-1;MODE=MSSQLServer"
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+govbi:
+  versao: 1.0.1-local
+  seguranca:
+    oidc-habilitado: false
+  ia:
+    modo: ${GOVBI_IA_MODO:mock-rag}
+    max-tentativas: 2
+    gemini:
+      api-key: ${GOVBI_GEMINI_API_KEY:}
+      model: gemini-1.5-flash
+      timeout-segundos: 30
+    groq:
+      api-key: ${GOVBI_GROQ_API_KEY:}
+      model: llama-3.3-70b-versatile
+      timeout-segundos: 30
+  dados:
+    executor: ${GOVBI_DADOS_EXECUTOR:mock}
+    permitir-execucao-real: false
+    postgres:
+      url: ${GOVBI_POSTGRES_URL:}
+      usuario: ${GOVBI_POSTGRES_USER:}
+      senha: ${GOVBI_POSTGRES_SENHA:}
+      schema: public
+  cofre:
+    habilitado: ${GOVBI_COFRE_HABILITADO:false}
+    url: ${GOVBI_COFRE_URL:http://localhost:8081}
+    token: ${GOVBI_COFRE_TOKEN:}
+
+logging:
+  level:
+    br.com.reqsys: DEBUG

@@ -1,0 +1,25 @@
+{
+  "produto": "GovBI IA — BI Conversacional Governado",
+  "versao": "1.0.1",
+  "status": "homologacao-operacional",
+  "data": "2026-06-14",
+  "baseline": "1.0.0",
+  "artefatos": [
+    "govbi-ia-mvp-v1.0.1.zip",
+    "govbi-ia-demo-v1.0.1.html",
+    "docs/HOMOLOGACAO_V101.md",
+    "docs/ACEITE_FORMAL_V101.md",
+    "docs/RUNBOOK_GO_LIVE_V101.md"
+  ],
+  "gates": [
+    "quality_check",
+    "catalog_version",
+    "homologation_v101",
+    "smoke_homologacao",
+    "e2e_contract_v100"
+  ],
+  "promocao": {
+    "homologacao": "permitida com execução real desabilitada por padrão",
+    "producao": "condicionada ao aceite formal e readiness aprovado"
+  }
+}
