@@ -3,7 +3,7 @@ govbi:
   seguranca:
     oidc-habilitado: ${GOVBI_OIDC_HABILITADO:false}
   dados:
-    executor: ${GOVBI_DADOS_EXECUTOR:mock-rag}
+    executor: ${GOVBI_DADOS_EXECUTOR:mock}
     permitir-execucao-real: ${GOVBI_DADOS_PERMITIR_EXECUCAO_REAL:false}
 produto-operacional:
   persistencia:

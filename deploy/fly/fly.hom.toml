@@ -6,7 +6,7 @@ app = "govbi-ia-hom"
 primary_region = "gru"
 
 [build]
-  dockerfile = "deploy/docker/Dockerfile"
+  dockerfile = "../../deploy/docker/Dockerfile"
 
 [env]
   SPRING_PROFILES_ACTIVE = "hom"
@@ -15,7 +15,7 @@ primary_region = "gru"
   GOVBI_RELEASE_MODO = "homologacao"
   GOVBI_IA_MODO = "gemini"
   GOVBI_GEMINI_MODEL = "gemini-2.0-flash"
-  GOVBI_DADOS_EXECUTOR = "mock-rag"
+  GOVBI_DADOS_EXECUTOR = "mock"
   GOVBI_DADOS_PERMITIR_EXECUCAO_REAL = "false"
   GOVBI_OIDC_HABILITADO = "false"
   GOVBI_WORKER_HABILITADO = "false"
