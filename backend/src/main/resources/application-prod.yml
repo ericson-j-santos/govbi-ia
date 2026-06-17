@@ -1,19 +1,23 @@
 govbi:
   versao: 1.0.1
   seguranca:
-    oidc-habilitado: true
+    oidc-habilitado: ${GOVBI_OIDC_HABILITADO:false}
   dados:
-    executor: ${GOVBI_DADOS_EXECUTOR:sqlserver}
-    permitir-execucao-real: ${GOVBI_DADOS_PERMITIR_EXECUCAO_REAL:true}
+    executor: ${GOVBI_DADOS_EXECUTOR:mock-rag}
+    permitir-execucao-real: ${GOVBI_DADOS_PERMITIR_EXECUCAO_REAL:false}
 produto-operacional:
   persistencia:
     operacional:
-      tipo: sqlserver
+      tipo: ${GOVBI_PERSISTENCIA_OPERACIONAL_TIPO:memoria}
   worker:
-    habilitado: ${GOVBI_WORKER_HABILITADO:true}
+    habilitado: ${GOVBI_WORKER_HABILITADO:false}
 integracao-corporativa:
   lock:
-    tipo: sqlserver
+    tipo: ${GOVBI_LOCK_TIPO:memoria}
 release:
   corporativa:
-    modo: producao
+    modo: ${GOVBI_RELEASE_MODO:producao}
+    exigir-oidc-producao: ${GOVBI_RELEASE_EXIGIR_OIDC_PRODUCAO:false}
+    exigir-sqlserver-operacional-producao: ${GOVBI_RELEASE_EXIGIR_SQLSERVER_OPERACIONAL_PRODUCAO:false}
+    exigir-execucao-real-explicita: ${GOVBI_RELEASE_EXIGIR_EXECUCAO_REAL_EXPLICITA:false}
+    exigir-download-auditado: ${GOVBI_RELEASE_EXIGIR_DOWNLOAD_AUDITADO:false}
