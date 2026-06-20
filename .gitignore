@@ -1,9 +1,42 @@
-﻿target/
+﻿# Maven / Java
+target/
 *.jar
 *.class
-.env*
-data/
+*.iml
+.idea/
+
+# Environment / secrets
+.env
+.env.local
+.env.hom
+.env.prod
+.env.*.local
+
+# Logs
 *.log
 *.err
-.idea/
-*.iml
+data/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/settings.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+

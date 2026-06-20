@@ -3,29 +3,172 @@ info:
   title: GovBI IA API
   version: 1.0.1
   description: API do GovBI IA com pacote de homologação operacional.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
 paths:
-  /api/v1/release/readiness:
-    get:
-      summary: Consulta readiness da release
-      responses:
-        '200': { description: OK }
   /api/v1/perguntas:
     post:
-      summary: Executa pergunta analítica governada
+      summary: Executa pergunta analítica governada por NL→SQL
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pergunta]
+              properties:
+                pergunta:
+                  type: string
+                formatoResposta:
+                  type: string
+                exibirSql:
+                  type: boolean
       responses:
-        '200': { description: OK }
+        '200': { description: Resposta analítica com SQL gerado e resultado }
+        '400': { description: Pergunta inválida ou em branco }
+        '401': { description: Não autenticado }
+        '403': { description: Perfil sem permissão para a métrica solicitada }
+
   /api/v1/aprovacoes/pendentes:
     get:
-      summary: Lista aprovações pendentes
+      summary: Lista aprovações pendentes de PII
+      security:
+        - bearerAuth: []
       responses:
-        '200': { description: OK }
+        '200': { description: Lista de aprovações pendentes }
+
+  /api/v1/aprovacoes/{id}/decisao:
+    post:
+      summary: Decide (aprova ou rejeita) uma aprovação
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                decisao:
+                  type: string
+                  enum: [APROVADA, REJEITADA]
+                justificativa:
+                  type: string
+      responses:
+        '200': { description: Aprovação registrada }
+
+  /api/v1/exportacoes:
+    post:
+      summary: Exporta resultado de consulta em CSV ou JSON
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [resultado, formato]
+              properties:
+                correlationId:
+                  type: string
+                resultado:
+                  type: object
+                formato:
+                  type: string
+                  enum: [csv, json]
+      responses:
+        '200':
+          description: Arquivo exportado
+          content:
+            text/csv:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/downloads/resultados/{resultadoId}:
+    get:
+      summary: Faz download de resultado auditado
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: resultadoId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200': { description: Arquivo para download }
+        '404': { description: Resultado não encontrado }
+
+  /api/v1/historico/recentes:
+    get:
+      summary: Lista histórico recente de conversas
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: Histórico de conversas }
+
   /api/v1/auditoria/recentes:
     get:
       summary: Lista auditorias recentes
+      security:
+        - bearerAuth: []
       responses:
-        '200': { description: OK }
+        '200': { description: Registros de auditoria }
+
+  /api/v1/fila-consultas/pendentes:
+    get:
+      summary: Lista consultas pendentes na fila
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: Fila de consultas pendentes }
+
+  /api/v1/fila-consultas/aprovacoes/{id}/reprocessar:
+    post:
+      summary: Reprocessa uma aprovação na fila
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200': { description: Aprovação reprocessada }
+
+  /api/v1/release/readiness:
+    get:
+      summary: Consulta readiness da release para produção
+      responses:
+        '200': { description: Status de readiness da release }
+
   /actuator/health:
     get:
       summary: Health check operacional
       responses:
         '200': { description: UP }
+
+  /actuator/prometheus:
+    get:
+      summary: Métricas Prometheus
+      responses:
+        '200': { description: Métricas no formato text/plain }

@@ -12,7 +12,7 @@ def offline():
     if dataset.get('versao') not in ('1.0.0','1.0.1') or missing:
         print('FAIL e2e_contract offline missing=' + ','.join(sorted(missing)))
         return 2
-    openapi = (ROOT / 'docs/openapi/govbi-ia-v1.0.0.yaml').read_text(encoding='utf-8')
+    openapi = (ROOT / 'docs/openapi/govbi-ia-v1.0.1.yaml').read_text(encoding='utf-8')
     for path in ['/api/v1/perguntas', '/api/v1/release/readiness', '/api/v1/downloads/resultados/{resultadoId}']:
         if path not in openapi:
             print('FAIL openapi missing ' + path)

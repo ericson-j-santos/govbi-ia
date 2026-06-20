@@ -1,7 +1,4 @@
-import { Injectable 
-  get(path: string) { return this.http.get(`/api/v1${path}`); }
-  post(path: string, body: unknown) { return this.http.post(`/api/v1${path}`, body); }
-} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })

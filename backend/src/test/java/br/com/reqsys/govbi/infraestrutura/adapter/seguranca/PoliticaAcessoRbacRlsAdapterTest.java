@@ -25,10 +25,11 @@ class PoliticaAcessoRbacRlsAdapterTest {
     @Test
     void deveAplicarRlsQuandoEscopoNaoForGeral() {
         var policy = new PoliticaAcessoRbacRlsAdapter(true);
-        var consulta = new ConsultaGerada("SELECT t.ano_mes, COUNT(*) AS valor
-FROM gold.fato_proposta p
-WHERE p.ic_excluido = 0
-GROUP BY t.ano_mes", true, "x");
+        var consulta = new ConsultaGerada("""
+                SELECT t.ano_mes, COUNT(*) AS valor
+                FROM gold.fato_proposta p
+                WHERE p.ic_excluido = 0
+                GROUP BY t.ano_mes""", true, "x");
         var comRls = policy.aplicarRestricoesLinha(new UsuarioContexto("u", "ANALISTA", "SR001"), metrica, consulta);
         assertTrue(comRls.sql().contains("JOIN gold.dim_unidade u"));
         assertTrue(comRls.sql().contains("u.codigo_unidade = 'SR001'"));
