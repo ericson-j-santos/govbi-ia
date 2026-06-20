@@ -2,8 +2,13 @@
 *.jar
 *.class
 .env*
+!deploy/env/.env*.example
+!deploy/env/.env.local
 data/
 *.log
 *.err
 .idea/
 *.iml
+frontend-angular/node_modules/
+frontend-angular/dist/
+frontend-angular/.angular/

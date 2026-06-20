@@ -17,12 +17,14 @@ public class ClienteLlmAzureOpenAiAdapter implements ClienteLlmPort {
             @Value("${govbi.ia.azure-openai.deployment}") String deployment,
             @Value("${govbi.ia.azure-openai.api-key}") String apiKey,
             @Value("${govbi.ia.azure-openai.api-version}") String apiVersion,
-            @Value("${govbi.ia.azure-openai.timeout-segundos:30}") int timeoutSegundos
+            @Value("${govbi.ia.azure-openai.timeout-segundos:30}") int timeoutSegundos,
+            @Value("${govbi.ia.http-max-tentativas:3}") int httpMaxTentativas,
+            @Value("${govbi.ia.http-backoff-inicial-ms:500}") long httpBackoffInicialMs
     ) {
         String url = endpoint == null || endpoint.isBlank()
                 ? ""
                 : endpoint.replaceAll("/$", "") + "/openai/deployments/" + deployment + "/chat/completions?api-version=" + apiVersion;
-        this.delegate = new ClienteLlmOpenAiAdapter(url, apiKey, deployment, timeoutSegundos);
+        this.delegate = new ClienteLlmOpenAiAdapter(url, apiKey, deployment, timeoutSegundos, httpMaxTentativas, httpBackoffInicialMs);
     }
 
     @Override

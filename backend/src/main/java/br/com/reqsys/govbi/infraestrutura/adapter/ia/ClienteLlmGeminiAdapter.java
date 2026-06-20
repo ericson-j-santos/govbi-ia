@@ -27,19 +27,21 @@ public class ClienteLlmGeminiAdapter implements ClienteLlmPort {
 
     private final String apiKey;
     private final String model;
-    private final HttpClient httpClient;
+    private final HttpLlmResilienteClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public ClienteLlmGeminiAdapter(
             @Value("${govbi.ia.gemini.api-key:}") String apiKey,
             @Value("${govbi.ia.gemini.model:gemini-2.0-flash}") String model,
-            @Value("${govbi.ia.gemini.timeout-segundos:30}") int timeoutSegundos
+            @Value("${govbi.ia.gemini.timeout-segundos:30}") int timeoutSegundos,
+            @Value("${govbi.ia.http-max-tentativas:3}") int httpMaxTentativas,
+            @Value("${govbi.ia.http-backoff-inicial-ms:500}") long httpBackoffInicialMs
     ) {
         this.apiKey = apiKey;
         this.model = model;
-        this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(timeoutSegundos))
-                .build();
+        Duration timeout = Duration.ofSeconds(timeoutSegundos);
+        HttpClient client = HttpClient.newBuilder().connectTimeout(timeout).build();
+        this.httpClient = new HttpLlmResilienteClient(client, timeout, httpMaxTentativas, httpBackoffInicialMs);
     }
 
     @Override
@@ -56,21 +58,18 @@ public class ClienteLlmGeminiAdapter implements ClienteLlmPort {
                             contratoSistema() + "\n\n" + montarPrompt(prompt))
             ));
 
-            HttpRequest request = HttpRequest.newBuilder(URI.create(GEMINI_BASE_URL))
-                    .timeout(Duration.ofSeconds(60))
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(GEMINI_BASE_URL))
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)))
-                    .build();
+                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)));
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.enviarComRetry(requestBuilder);
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
                 throw new IllegalStateException("Gemini retornou HTTP " + response.statusCode() + ": " + response.body());
             }
 
             JsonNode body = mapper.readTree(response.body());
             String content = body.path("choices").path(0).path("message").path("content").asText();
-            // Gemini às vezes envolve o JSON em ```json ... ```
             content = content.replaceAll("(?s)```json\\s*", "").replaceAll("(?s)```\\s*$", "").trim();
             JsonNode plano = mapper.readTree(content);
 

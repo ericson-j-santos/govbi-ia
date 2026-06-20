@@ -47,9 +47,15 @@ govbi:
       ambiente: ${GOVBI_AMBIENTE:local}
       versao: ${GOVBI_VERSAO:1.0.1}
   ia:
-    # mock-rag | openai | azure-openai | groq
+    # mock-rag | openai | azure-openai | groq | gemini
     modo: ${GOVBI_IA_MODO:mock-rag}
     max-tentativas-geracao: ${GOVBI_IA_MAX_TENTATIVAS:3}
+    http-max-tentativas: ${GOVBI_IA_HTTP_MAX_TENTATIVAS:3}
+    http-backoff-inicial-ms: ${GOVBI_IA_HTTP_BACKOFF_INICIAL_MS:500}
+    gemini:
+      api-key: ${GOVBI_GEMINI_API_KEY:}
+      model: ${GOVBI_GEMINI_MODEL:gemini-2.0-flash}
+      timeout-segundos: ${GOVBI_GEMINI_TIMEOUT_SEGUNDOS:30}
     openai:
       base-url: ${GOVBI_OPENAI_BASE_URL:https://api.openai.com/v1/chat/completions}
       api-key: ${GOVBI_OPENAI_API_KEY:}
@@ -71,6 +77,9 @@ govbi:
     recurso-yaml: ${GOVBI_CATALOGO_RECURSO:classpath:catalogo-semantico.yml}
   seguranca:
     oidc-habilitado: ${GOVBI_OIDC_HABILITADO:false}
+    rate-limit:
+      habilitado: ${GOVBI_SEGURANCA_RATE_LIMIT_HABILITADO:true}
+      requisicoes-por-minuto: ${GOVBI_SEGURANCA_RATE_LIMIT_REQUISICOES_POR_MINUTO:60}
     camada-obrigatoria: gold
     limite-linhas-dry-run: 50000
     limite-custo-dry-run: 75
@@ -81,7 +90,7 @@ govbi:
     claim-perfis: ${GOVBI_OIDC_CLAIM_PERFIS:roles}
     claim-unidade: ${GOVBI_OIDC_CLAIM_UNIDADE:escopo_unidade}
   dados:
-    # mock | sqlserver | databricks
+    # mock | sqlserver | databricks | postgres
     executor: ${GOVBI_DADOS_EXECUTOR:mock}
     permitir-execucao-real: ${GOVBI_DADOS_PERMITIR_EXECUCAO_REAL:false}
     query-timeout-segundos: ${GOVBI_DADOS_QUERY_TIMEOUT_SEGUNDOS:30}

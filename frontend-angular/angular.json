@@ -26,7 +26,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "buildTarget": "govbi-ia-frontend:build"
+            "buildTarget": "govbi-ia-frontend:build",
+            "proxyConfig": "proxy.conf.json"
           }
         },
         "test": {

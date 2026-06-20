@@ -36,6 +36,18 @@
       "modo": "offline",
       "status": "OK",
       "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-007",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
+    },
+    {
+      "caso": "GOVBI-GOLD-008",
+      "modo": "offline",
+      "status": "OK",
+      "duracaoMs": null
     }
   ]
 }

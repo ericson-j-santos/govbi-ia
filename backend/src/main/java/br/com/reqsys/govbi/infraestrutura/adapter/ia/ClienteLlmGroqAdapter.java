@@ -20,7 +20,6 @@ import java.util.Map;
 
 /**
  * Adapter para Groq (https://console.groq.com) — API gratuita OpenAI-compatível.
- * Modelos disponíveis no tier gratuito: llama-3.3-70b-versatile, llama-3.1-8b-instant.
  */
 @Component
 @ConditionalOnProperty(name = "govbi.ia.modo", havingValue = "groq")
@@ -30,19 +29,21 @@ public class ClienteLlmGroqAdapter implements ClienteLlmPort {
 
     private final String apiKey;
     private final String model;
-    private final HttpClient httpClient;
+    private final HttpLlmResilienteClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public ClienteLlmGroqAdapter(
             @Value("${govbi.ia.groq.api-key:}") String apiKey,
             @Value("${govbi.ia.groq.model:llama-3.3-70b-versatile}") String model,
-            @Value("${govbi.ia.groq.timeout-segundos:30}") int timeoutSegundos
+            @Value("${govbi.ia.groq.timeout-segundos:30}") int timeoutSegundos,
+            @Value("${govbi.ia.http-max-tentativas:3}") int httpMaxTentativas,
+            @Value("${govbi.ia.http-backoff-inicial-ms:500}") long httpBackoffInicialMs
     ) {
         this.apiKey = apiKey;
         this.model = model;
-        this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(timeoutSegundos))
-                .build();
+        Duration timeout = Duration.ofSeconds(timeoutSegundos);
+        HttpClient client = HttpClient.newBuilder().connectTimeout(timeout).build();
+        this.httpClient = new HttpLlmResilienteClient(client, timeout, httpMaxTentativas, httpBackoffInicialMs);
     }
 
     @Override
@@ -60,14 +61,12 @@ public class ClienteLlmGroqAdapter implements ClienteLlmPort {
                     Map.of("role", "user", "content", montarPrompt(prompt))
             ));
 
-            HttpRequest request = HttpRequest.newBuilder(URI.create(GROQ_BASE_URL))
-                    .timeout(Duration.ofSeconds(60))
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(GROQ_BASE_URL))
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)))
-                    .build();
+                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)));
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.enviarComRetry(requestBuilder);
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
                 throw new IllegalStateException("Groq retornou status HTTP " + response.statusCode() + ". Verifique a chave e os limites do plano gratuito.");
             }

@@ -18,7 +18,7 @@ govbi:
     oidc-habilitado: false
   ia:
     modo: ${GOVBI_IA_MODO:mock-rag}
-    max-tentativas: 2
+    max-tentativas-geracao: 2
     gemini:
       api-key: ${GOVBI_GEMINI_API_KEY:}
       model: gemini-1.5-flash
@@ -33,7 +33,7 @@ govbi:
     postgres:
       url: ${GOVBI_POSTGRES_URL:}
       usuario: ${GOVBI_POSTGRES_USER:}
-      senha: ${GOVBI_POSTGRES_SENHA:}
+      senha: ${GOVBI_POSTGRES_PASSWORD:}
       schema: public
   cofre:
     habilitado: ${GOVBI_COFRE_HABILITADO:false}

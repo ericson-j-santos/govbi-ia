@@ -3,11 +3,32 @@ name: Deploy Fly.io
 on:
   push:
     branches:
-      - develop   # deploy automático em hom
-      - main      # deploy em prod (com aprovação)
+      - develop
+      - main
+      - master
 
 jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Tests and quality gate
+        run: |
+          cd backend && mvn test
+          cd ..
+          python scripts/quality_check.py
+          python scripts/validate_homologation_v101.py
+
   build:
+    needs: quality-gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +38,7 @@ jobs:
           java-version: '21'
           cache: maven
       - name: Build JAR
-        run: cd backend && mvn package -Dmaven.test.skip=true
+        run: cd backend && mvn package -DskipTests
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
@@ -44,7 +65,7 @@ jobs:
 
   deploy-prod:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: producao
     steps:

@@ -1,0 +1,33 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+  datasource:
+    url: "jdbc:h2:mem:govbi_test;DB_CLOSE_DELAY=-1;MODE=MSSQLServer"
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+govbi:
+  versao: 1.0.1-test
+  cofre:
+    habilitado: false
+  seguranca:
+    oidc-habilitado: false
+    rate-limit:
+      habilitado: false
+  ia:
+    modo: mock-rag
+    max-tentativas-geracao: 2
+  dados:
+    executor: mock
+    permitir-execucao-real: false
+  catalogo:
+    tipo: memoria
+  produto-operacional:
+    persistencia:
+      operacional:
+        tipo: memoria
+  integracao-corporativa:
+    lock:
+      tipo: memoria

@@ -24,19 +24,23 @@ public class ClienteLlmOpenAiAdapter implements ClienteLlmPort {
     private final String baseUrl;
     private final String apiKey;
     private final String model;
-    private final HttpClient httpClient;
+    private final HttpLlmResilienteClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public ClienteLlmOpenAiAdapter(
             @Value("${govbi.ia.openai.base-url}") String baseUrl,
             @Value("${govbi.ia.openai.api-key}") String apiKey,
             @Value("${govbi.ia.openai.model}") String model,
-            @Value("${govbi.ia.openai.timeout-segundos:30}") int timeoutSegundos
+            @Value("${govbi.ia.openai.timeout-segundos:30}") int timeoutSegundos,
+            @Value("${govbi.ia.http-max-tentativas:3}") int httpMaxTentativas,
+            @Value("${govbi.ia.http-backoff-inicial-ms:500}") long httpBackoffInicialMs
     ) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
         this.model = model;
-        this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(timeoutSegundos)).build();
+        Duration timeout = Duration.ofSeconds(timeoutSegundos);
+        HttpClient client = HttpClient.newBuilder().connectTimeout(timeout).build();
+        this.httpClient = new HttpLlmResilienteClient(client, timeout, httpMaxTentativas, httpBackoffInicialMs);
     }
 
     @Override
@@ -53,13 +57,11 @@ public class ClienteLlmOpenAiAdapter implements ClienteLlmPort {
                     Map.of("role", "system", "content", contratoSistema()),
                     Map.of("role", "user", "content", montarPrompt(prompt))
             ));
-            HttpRequest request = HttpRequest.newBuilder(URI.create(baseUrl))
-                    .timeout(Duration.ofSeconds(60))
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(baseUrl))
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)))
-                    .build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                    .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)));
+            HttpResponse<String> response = httpClient.enviarComRetry(requestBuilder);
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
                 throw new IllegalStateException("LLM retornou status HTTP não aprovado: " + response.statusCode());
             }

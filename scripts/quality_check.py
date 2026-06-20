@@ -17,6 +17,7 @@ required = [
     "docs/RELEASE_NOTES_V100.md",
     "docs/schema/catalogo-semantico.schema.json",
     "docs/openapi/govbi-ia-v1.0.0.yaml",
+    "docs/openapi/govbi-ia-v1.0.1.yaml",
     "release/release-manifest-v1.0.0.json",
     "backend/src/main/resources/db/migration/V0010__release_corporativa_v100.sql",
     "scripts/validate_release_v100.py",
@@ -45,12 +46,16 @@ app = (ROOT / "backend/src/main/resources/application.yml").read_text(encoding="
 catalogo = (ROOT / "backend/src/main/resources/catalogo-semantico.yml").read_text(encoding="utf-8")
 checks.append(("backend version 1.0.x", "<version>1.0.0</version>" in pom or "<version>1.0.1</version>" in pom))
 checks.append(("catalog version 1.0.x", ('versao: "1.0.0"' in catalogo and 'compatibilidadeMinimaBackend: "1.0.0"' in catalogo) or ('versao: "1.0.1"' in catalogo and 'compatibilidadeMinimaBackend: "1.0.1"' in catalogo)))
-checks.append(("README v1.0.0", "v1.0.0" in readme and "release candidate" in readme.lower()))
+checks.append(("README v1.0.x", ("v1.0.0" in readme or "v1.0.1" in readme) and ("release candidate" in readme.lower() or "homologação" in readme.lower())))
 checks.append(("release config", "release:" in app and "hardening-obrigatorio" in app))
 checks.append(("prometheus registry", "micrometer-registry-prometheus" in pom))
 checks.append(("otel tracing", "micrometer-tracing-bridge-otel" in pom and "opentelemetry-exporter-otlp" in pom))
 checks.append(("actuator prometheus", "prometheus" in app and "/actuator/prometheus" in readme))
 checks.append(("catalog governance contract", "contratoGovernanca:" in catalogo and "releaseV100:" in catalogo))
+checks.append(("gemini config", "gemini:" in app))
+checks.append(("postgres executor", "postgres" in app and (ROOT / "backend/src/main/java/br/com/reqsys/govbi/infraestrutura/adapter/execucao/jdbc/ExecutorConsultaPostgresAdapter.java").exists()))
+checks.append(("rate limit filter", (ROOT / "backend/src/main/java/br/com/reqsys/govbi/infraestrutura/config/RateLimitFilter.java").exists()))
+checks.append(("env templates", (ROOT / "deploy/env/.env.hom.example").exists() and (ROOT / "deploy/env/.env.prod.example").exists()))
 java_files = list((ROOT / "backend/src").rglob("*.java"))
 html = ROOT / "demo/govbi-ia-demo.html"
 print("quality_check=OK" if all(ok for _, ok in checks) else "quality_check=FAIL")

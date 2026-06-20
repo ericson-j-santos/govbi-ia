@@ -3,7 +3,7 @@ name: GovBI IA Quality Gate
 on:
   pull_request:
   push:
-    branches: [ main, develop ]
+    branches: [ master, main, develop ]
 
 jobs:
   quality-gate:
@@ -14,10 +14,16 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+          cache: maven
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Unit tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend-angular/package-lock.json
+      - name: Unit and integration tests
         run: |
           cd backend
           mvn test
@@ -35,3 +41,8 @@ jobs:
           python scripts/validate_homologation_v101.py
           python scripts/run_homologation_smoke.py --modo offline
           python scripts/generate_aceite_report.py --ambiente ci
+      - name: Frontend build
+        run: |
+          cd frontend-angular
+          npm install
+          npm run build

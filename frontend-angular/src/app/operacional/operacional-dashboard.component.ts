@@ -1,6 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OperacionalApiService } from './operacional-api.service';
+import {
+  EventoAuditoriaConsulta,
+  ItemFilaConsulta,
+  RegistroHistoricoConversa,
+  SolicitacaoAprovacao
+} from '../modelos';
 
 @Component({
   selector: 'app-operacional-dashboard',
@@ -9,18 +15,22 @@ import { OperacionalApiService } from './operacional-api.service';
   templateUrl: './operacional-dashboard.component.html',
   styleUrls: ['./operacional-dashboard.component.scss']
 })
-export class OperacionalDashboardComponent {
-  aprovacoes: any[] = [];
-  fila: any[] = [];
-  historico: any[] = [];
-  auditoria: any[] = [];
+export class OperacionalDashboardComponent implements OnInit {
+  aprovacoes: SolicitacaoAprovacao[] = [];
+  fila: ItemFilaConsulta[] = [];
+  historico: RegistroHistoricoConversa[] = [];
+  auditoria: EventoAuditoriaConsulta[] = [];
 
   constructor(private readonly api: OperacionalApiService) {}
 
+  ngOnInit(): void {
+    this.carregar();
+  }
+
   carregar(): void {
-    this.api.listarAprovacoesPendentes().subscribe((r: any) => this.aprovacoes = Array.isArray(r) ? r : []);
-    this.api.listarFilaPendente().subscribe((r: any) => this.fila = Array.isArray(r) ? r : []);
-    this.api.listarHistorico().subscribe((r: any) => this.historico = Array.isArray(r) ? r : []);
-    this.api.listarAuditoria().subscribe((r: any) => this.auditoria = Array.isArray(r) ? r : []);
+    this.api.listarAprovacoesPendentes().subscribe(r => this.aprovacoes = Array.isArray(r) ? r : []);
+    this.api.listarFilaPendente().subscribe(r => this.fila = Array.isArray(r) ? r : []);
+    this.api.listarHistorico().subscribe(r => this.historico = Array.isArray(r) ? r : []);
+    this.api.listarAuditoria().subscribe(r => this.auditoria = Array.isArray(r) ? r : []);
   }
 }

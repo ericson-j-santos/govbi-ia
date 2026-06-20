@@ -1,6 +1,6 @@
 {
   "versao": "1.0.1",
-  "descricao": "Golden dataset mínimo para avaliar qualidade NL→Plano→SQL do GovBI IA v1.0.0.",
+  "descricao": "Golden dataset para avaliar qualidade NL→Plano→SQL do GovBI IA v1.0.1.",
   "casos": [
     {
       "id": "GOVBI-GOLD-001",
@@ -109,6 +109,44 @@
         "motivoContem": [
           "read-only",
           "comando proibido"
+        ]
+      }
+    },
+    {
+      "id": "GOVBI-GOLD-007",
+      "pergunta": "Qual o total de propostas cadastradas em 2025 por produto?",
+      "esperado": {
+        "metrica": "qtd_propostas_cadastradas",
+        "dimensoes": [
+          "produto"
+        ],
+        "sqlContem": [
+          "gold.dim_produto",
+          "COUNT(*)",
+          "gold.fato_proposta"
+        ],
+        "sqlNaoContem": [
+          "SELECT *",
+          "DELETE"
+        ]
+      }
+    },
+    {
+      "id": "GOVBI-GOLD-008",
+      "pergunta": "Mostre a quantidade de propostas por canal de origem em 2025",
+      "esperado": {
+        "metrica": "qtd_propostas_cadastradas",
+        "dimensoes": [
+          "canal"
+        ],
+        "sqlContem": [
+          "COUNT(*)",
+          "GROUP BY"
+        ],
+        "sqlNaoContem": [
+          "SELECT *",
+          "UPDATE",
+          "DROP"
         ]
       }
     }
