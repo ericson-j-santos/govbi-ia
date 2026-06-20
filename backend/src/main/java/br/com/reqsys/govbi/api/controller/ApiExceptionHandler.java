@@ -20,6 +20,15 @@ public class ApiExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> tratarEstadoInvalido(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "timestamp", Instant.now().toString(),
+                "erro", "ESTADO_INVALIDO",
+                "mensagem", ex.getMessage()
+        ));
+    }
+
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<Map<String, Object>> tratarSeguranca(SecurityException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
