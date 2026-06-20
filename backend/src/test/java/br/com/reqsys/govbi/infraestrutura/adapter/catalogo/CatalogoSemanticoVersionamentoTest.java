@@ -12,9 +12,9 @@ class CatalogoSemanticoVersionamentoTest {
         try (var input = getClass().getClassLoader().getResourceAsStream("catalogo-semantico.yml")) {
             assertThat(input).isNotNull();
             String yaml = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-            assertThat(yaml).contains("versao: \"0.5.0\"");
+            assertThat(yaml).contains("versao: \"1.0.1\"");
             assertThat(yaml).contains("contratoGovernanca:");
-            assertThat(yaml).contains("compatibilidadeMinimaBackend: \"0.5.0\"");
+            assertThat(yaml).contains("compatibilidadeMinimaBackend: \"1.0.1\"");
             assertThat(yaml).contains("politicaAcesso:");
             assertThat(yaml).contains("camposSensiveis:");
         }
