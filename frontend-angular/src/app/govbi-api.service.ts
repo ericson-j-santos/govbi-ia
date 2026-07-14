@@ -5,7 +5,7 @@ import { PerguntaAnaliticaRequest, RespostaAnalitica } from './modelos';
 
 @Injectable({ providedIn: 'root' })
 export class GovBiApiService {
-  private readonly baseUrl = 'http://localhost:8080/api/v1/perguntas';
+  private readonly baseUrl = '/api/v1/perguntas';
 
   constructor(private readonly http: HttpClient) {}
 
