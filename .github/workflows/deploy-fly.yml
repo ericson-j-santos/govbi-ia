@@ -26,8 +26,9 @@ jobs:
           retention-days: 1
 
   deploy-hom:
+    # Fly.io retirado definitivamente pelo usuário em 2026-10-02.
+    if: ${{ false }}
     needs: build
-    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     environment: homologacao
     steps:
@@ -43,8 +44,9 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
   deploy-prod:
+    # Fly.io retirado definitivamente pelo usuário em 2026-10-02.
+    if: ${{ false }}
     needs: build
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: producao
     steps:
