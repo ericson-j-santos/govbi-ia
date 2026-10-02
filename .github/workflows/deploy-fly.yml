@@ -27,7 +27,8 @@ jobs:
 
   deploy-hom:
     needs: build
-    if: github.ref == 'refs/heads/develop'
+    # Fly.io retirado definitivamente pelo usuário em 2026-10-02.
+    if: ${{ false && (github.ref == 'refs/heads/develop') }}
     runs-on: ubuntu-latest
     environment: homologacao
     steps:
@@ -44,7 +45,8 @@ jobs:
 
   deploy-prod:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    # Fly.io retirado definitivamente pelo usuário em 2026-10-02.
+    if: ${{ false && (github.ref == 'refs/heads/main') }}
     runs-on: ubuntu-latest
     environment: producao
     steps:
