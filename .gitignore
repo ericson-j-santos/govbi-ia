@@ -2,6 +2,8 @@
 *.jar
 *.class
 .env*
+!deploy/env/.env.hom.example
+!deploy/env/.env.prod.example
 data/
 *.log
 *.err
